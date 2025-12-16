@@ -240,9 +240,6 @@
 
       <div class="actions">
         <button onclick="copyRichText()">Copy Rich Text</button>
-        <button class="copy-btn" onclick="copyMarkdown()">
-          Copy as Markdown
-        </button>
         <button class="clear-btn" onclick="clearAll()">Clear</button>
         <div id="success" class="success-message">✓ Copied to clipboard!</div>
       </div>
@@ -284,25 +281,6 @@
           console.error("Copy failed:", err);
           alert("Copy failed. Please try selecting and copying manually.");
         }
-      }
-
-      function copyMarkdown() {
-        const markdown = markdownInput.value;
-
-        if (!markdown) {
-          alert("Nothing to copy");
-          return;
-        }
-
-        navigator.clipboard.writeText(markdown).then(
-          () => {
-            showSuccess();
-          },
-          (err) => {
-            console.error("Copy failed:", err);
-            alert("Copy failed. Please try again.");
-          }
-        );
       }
 
       function clearAll() {
