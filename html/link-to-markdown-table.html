@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link to Markdown Table</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f5f7;
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: #1d1d1f;
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #1d1d1f;
+      }
+
+      input {
+        width: 100%;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 14px;
+        padding: 12px 16px;
+        border: 1px solid #d2d2d7;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        transition: border-color 0.2s;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #0071e3;
+      }
+
+      textarea {
+        width: 100%;
+        font-family: "SF Mono", Monaco, monospace;
+        font-size: 13px;
+        padding: 16px;
+        border: 1px solid #d2d2d7;
+        border-radius: 8px;
+        resize: vertical;
+        margin-bottom: 16px;
+        transition: border-color 0.2s;
+        min-height: 120px;
+        background: #f5f5f7;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #0071e3;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .primary {
+        background: #0071e3;
+        color: white;
+      }
+
+      .primary:hover {
+        background: #0077ed;
+      }
+
+      .secondary {
+        background: #e8e8ed;
+        color: #1d1d1f;
+      }
+
+      .secondary:hover {
+        background: #d2d2d7;
+      }
+
+      .success {
+        background: #34c759;
+        color: white;
+      }
+
+      #output {
+        display: none;
+      }
+
+      #output.visible {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Link to Markdown Table</h1>
+
+      <label for="before">Before Link</label>
+      <input
+        type="text"
+        id="before"
+        placeholder="https://example.com/before"
+      />
+
+      <label for="after">After Link</label>
+      <input
+        type="text"
+        id="after"
+        placeholder="https://example.com/after"
+      />
+
+      <label for="output">Markdown Table</label>
+      <textarea
+        id="output"
+        readonly
+        placeholder="Markdown table will appear here"
+      ></textarea>
+
+      <div class="button-group">
+        <button id="copyBtn" class="primary">Copy to Clipboard</button>
+        <button id="clearBtn" class="secondary">Clear</button>
+      </div>
+    </div>
+
+    <script>
+      const beforeInput = document.getElementById("before");
+      const afterInput = document.getElementById("after");
+      const output = document.getElementById("output");
+      const copyBtn = document.getElementById("copyBtn");
+      const clearBtn = document.getElementById("clearBtn");
+
+      function generateMarkdownTable() {
+        const before = beforeInput.value.trim();
+        const after = afterInput.value.trim();
+
+        if (!before || !after) {
+          output.value = "";
+          output.classList.remove("visible");
+          return;
+        }
+
+        // Calculate separator lengths based on content
+        const beforeLen = Math.max(before.length, "Before".length);
+        const afterLen = Math.max(after.length, "After".length);
+
+        const beforeSep = ":" + "-".repeat(beforeLen - 1);
+        const afterSep = ":" + "-".repeat(afterLen - 1);
+
+        const markdown = `| Before${" ".repeat(beforeLen - 6)} | After${" ".repeat(afterLen - 5)} |
+| ${beforeSep} | ${afterSep} |
+| ${before} | ${after} |`;
+
+        output.value = markdown;
+        output.classList.add("visible");
+      }
+
+      // Auto-generate on input
+      beforeInput.addEventListener("input", generateMarkdownTable);
+      afterInput.addEventListener("input", generateMarkdownTable);
+
+      // Allow Enter key to focus next field or generate
+      beforeInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          afterInput.focus();
+        }
+      });
+
+      afterInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          generateMarkdownTable();
+          output.focus();
+        }
+      });
+
+      copyBtn.addEventListener("click", async () => {
+        if (output.value) {
+          await navigator.clipboard.writeText(output.value);
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = "Copied!";
+          copyBtn.classList.remove("primary");
+          copyBtn.classList.add("success");
+
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.classList.remove("success");
+            copyBtn.classList.add("primary");
+          }, 2000);
+        }
+      });
+
+      clearBtn.addEventListener("click", () => {
+        beforeInput.value = "";
+        afterInput.value = "";
+        output.value = "";
+        output.classList.remove("visible");
+        beforeInput.focus();
+      });
+    </script>
+  </body>
+</html>
