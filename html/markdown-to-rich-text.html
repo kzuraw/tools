@@ -21,77 +21,64 @@
       }
 
       .container {
-        max-width: 1200px;
+        max-width: 800px;
         margin: 0 auto;
         background: white;
+        padding: 40px;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-      }
-
-      .header {
-        padding: 32px;
-        border-bottom: 1px solid #e5e5e7;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
       h1 {
         font-size: 28px;
-        font-weight: 600;
+        margin-bottom: 32px;
         color: #1d1d1f;
+        font-weight: 600;
       }
 
-      .content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-        min-height: 500px;
-      }
-
-      .panel {
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .panel:first-child {
-        border-right: 1px solid #e5e5e7;
-      }
-
-      .panel h2 {
+      label {
+        display: block;
         font-size: 14px;
         font-weight: 600;
-        color: #6e6e73;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
+        color: #1d1d1f;
         text-transform: uppercase;
         letter-spacing: 0.5px;
       }
 
       textarea {
-        flex: 1;
+        width: 100%;
+        min-height: 200px;
+        padding: 12px;
+        background: #fafafa;
         border: 1px solid #d2d2d7;
         border-radius: 8px;
-        padding: 16px;
+        color: #1d1d1f;
         font-family: "SF Mono", Monaco, monospace;
-        font-size: 14px;
-        resize: none;
+        font-size: 13px;
+        line-height: 1.6;
+        resize: vertical;
+        margin-bottom: 20px;
         outline: none;
         transition: border-color 0.2s;
-        line-height: 1.6;
       }
 
       textarea:focus {
         border-color: #0071e3;
+        background: #fff;
       }
 
       #preview {
-        flex: 1;
+        width: 100%;
+        min-height: 200px;
+        padding: 16px;
+        background: #fafafa;
         border: 1px solid #d2d2d7;
         border-radius: 8px;
-        padding: 16px;
         overflow-y: auto;
-        background: #fafafa;
         line-height: 1.6;
         color: #1d1d1f;
+        margin-bottom: 20px;
       }
 
       #preview h1,
@@ -187,14 +174,16 @@
         font-weight: 600;
       }
 
-      .button-group {
+      .actions {
         display: flex;
         gap: 12px;
-        margin-top: 16px;
+        align-items: center;
       }
 
       button {
         padding: 10px 20px;
+        background: #0071e3;
+        color: white;
         border: none;
         border-radius: 8px;
         font-size: 14px;
@@ -203,32 +192,29 @@
         transition: all 0.2s;
       }
 
-      .primary {
-        background: #0071e3;
-        color: white;
-      }
-
-      .primary:hover {
+      button:hover {
         background: #0077ed;
       }
 
-      .secondary {
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .copy-btn,
+      .clear-btn {
         background: #e8e8ed;
         color: #1d1d1f;
       }
 
-      .secondary:hover {
+      .copy-btn:hover,
+      .clear-btn:hover {
         background: #d2d2d7;
-      }
-
-      button:active {
-        transform: scale(0.98);
       }
 
       .success-message {
         color: #34c759;
         font-size: 14px;
-        margin-top: 12px;
+        margin-left: 12px;
         opacity: 0;
         transition: opacity 0.3s;
         font-weight: 500;
@@ -237,43 +223,28 @@
       .success-message.show {
         opacity: 1;
       }
-
-      @media (max-width: 768px) {
-        .content {
-          grid-template-columns: 1fr;
-        }
-
-        .panel:first-child {
-          border-right: none;
-          border-bottom: 1px solid #e5e5e7;
-        }
-      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <h1>Markdown → Rich Text</h1>
-      </div>
-      <div class="content">
-        <div class="panel">
-          <h2>Markdown Input</h2>
-          <textarea
-            id="markdown"
-            placeholder="Paste your markdown here..."
-          ></textarea>
-        </div>
-        <div class="panel">
-          <h2>Rich Text Preview</h2>
-          <div id="preview"></div>
-          <div class="button-group">
-            <button class="primary" onclick="copyRichText()">
-              Copy Rich Text
-            </button>
-            <button class="secondary" onclick="clearAll()">Clear</button>
-          </div>
-          <div id="success" class="success-message">✓ Copied to clipboard!</div>
-        </div>
+      <h1>Markdown → Rich Text</h1>
+
+      <label for="markdown">Markdown Input</label>
+      <textarea
+        id="markdown"
+        placeholder="Paste your markdown here..."
+      ></textarea>
+
+      <label for="preview">Rich Text Preview</label>
+      <div id="preview"></div>
+
+      <div class="actions">
+        <button onclick="copyRichText()">Copy Rich Text</button>
+        <button class="copy-btn" onclick="copyMarkdown()">
+          Copy as Markdown
+        </button>
+        <button class="clear-btn" onclick="clearAll()">Clear</button>
+        <div id="success" class="success-message">✓ Copied to clipboard!</div>
       </div>
     </div>
 
@@ -313,6 +284,25 @@
           console.error("Copy failed:", err);
           alert("Copy failed. Please try selecting and copying manually.");
         }
+      }
+
+      function copyMarkdown() {
+        const markdown = markdownInput.value;
+
+        if (!markdown) {
+          alert("Nothing to copy");
+          return;
+        }
+
+        navigator.clipboard.writeText(markdown).then(
+          () => {
+            showSuccess();
+          },
+          (err) => {
+            console.error("Copy failed:", err);
+            alert("Copy failed. Please try again.");
+          }
+        );
       }
 
       function clearAll() {
