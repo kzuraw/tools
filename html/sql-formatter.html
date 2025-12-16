@@ -12,36 +12,39 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #f5f5f7;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica",
+          "Arial", sans-serif;
+        background: #f5f5f5;
+        color: #1a1a1a;
         padding: 40px 20px;
         min-height: 100vh;
       }
 
       .container {
-        max-width: 1000px;
+        max-width: 800px;
         margin: 0 auto;
         background: white;
+        padding: 40px;
         border-radius: 12px;
-        padding: 32px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       }
 
       h1 {
         font-size: 28px;
-        font-weight: 600;
         margin-bottom: 8px;
-        color: #1d1d1f;
+        color: #1a1a1a;
+        font-weight: 600;
       }
 
       .subtitle {
         font-size: 14px;
-        color: #86868b;
-        margin-bottom: 24px;
+        color: #666;
+        margin-bottom: 32px;
       }
 
       .subtitle a {
-        color: #0071e3;
+        color: #0066cc;
         text-decoration: none;
       }
 
@@ -49,105 +52,94 @@
         text-decoration: underline;
       }
 
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #1a1a1a;
+      }
+
       textarea {
         width: 100%;
-        font-family: "SF Mono", Monaco, monospace;
+        min-height: 200px;
+        padding: 12px;
+        background: #fafafa;
+        border: 1px solid #d1d1d1;
+        border-radius: 6px;
+        color: #1a1a1a;
+        font-family: "SF Mono", "Monaco", "Consolas", monospace;
         font-size: 13px;
-        padding: 16px;
-        border: 1px solid #d2d2d7;
-        border-radius: 8px;
+        line-height: 1.6;
         resize: vertical;
-        margin-bottom: 16px;
-        transition: border-color 0.2s;
-        line-height: 1.5;
+        margin-bottom: 20px;
       }
 
       textarea:focus {
         outline: none;
-        border-color: #0071e3;
-      }
-
-      #input {
-        min-height: 250px;
-      }
-
-      #output {
-        min-height: 250px;
-        background: #f5f5f7;
-      }
-
-      .button-group {
-        display: flex;
-        gap: 12px;
-        margin-top: 16px;
-      }
-
-      button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .primary {
-        background: #0071e3;
-        color: white;
-      }
-
-      .primary:hover {
-        background: #0077ed;
-      }
-
-      .secondary {
-        background: #e8e8ed;
-        color: #1d1d1f;
-      }
-
-      .secondary:hover {
-        background: #d2d2d7;
-      }
-
-      .success {
-        background: #34c759;
-        color: white;
-      }
-
-      label {
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 8px;
-        color: #1d1d1f;
+        border-color: #0066cc;
+        background: #fff;
       }
 
       .options {
         display: flex;
-        gap: 20px;
-        margin-bottom: 20px;
-        padding: 16px;
-        background: #f5f5f7;
-        border-radius: 8px;
+        gap: 24px;
+        margin-bottom: 24px;
       }
 
-      .option {
+      .checkbox-wrapper {
         display: flex;
         align-items: center;
         gap: 8px;
       }
 
-      .option input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+      .checkbox-wrapper input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
         cursor: pointer;
       }
 
-      .option label {
+      .checkbox-wrapper label {
         margin: 0;
-        cursor: pointer;
         font-weight: 400;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      button:hover {
+        background: #0055b3;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .copy-btn,
+      .clear-btn {
+        background: #e5e5e5;
+        color: #1a1a1a;
+      }
+
+      .copy-btn:hover,
+      .clear-btn:hover {
+        background: #d4d4d4;
       }
     </style>
   </head>
@@ -155,7 +147,8 @@
     <div class="container">
       <h1>SQL Formatter</h1>
       <div class="subtitle">
-        Formats SQL according to <a href="https://www.sqlstyle.guide/" target="_blank">sqlstyle.guide</a>
+        Formats SQL according to
+        <a href="https://www.sqlstyle.guide/" target="_blank">sqlstyle.guide</a>
       </div>
 
       <label for="input">Paste SQL Query</label>
@@ -165,15 +158,11 @@
       ></textarea>
 
       <div class="options">
-        <div class="option">
-          <input type="checkbox" id="uppercase" checked />
-          <label for="uppercase">Uppercase Keywords</label>
-        </div>
-        <div class="option">
+        <div class="checkbox-wrapper">
           <input type="checkbox" id="indent" checked />
           <label for="indent">Auto Indent</label>
         </div>
-        <div class="option">
+        <div class="checkbox-wrapper">
           <input type="checkbox" id="newlines" checked />
           <label for="newlines">New Lines for Clauses</label>
         </div>
@@ -186,427 +175,245 @@
         placeholder="Formatted SQL will appear here"
       ></textarea>
 
-      <div class="button-group">
-        <button id="formatBtn" class="primary">Format SQL</button>
-        <button id="copyBtn" class="secondary">Copy to Clipboard</button>
-        <button id="clearBtn" class="secondary">Clear</button>
+      <div class="actions">
+        <button onclick="formatSQL()">Format SQL</button>
+        <button class="copy-btn" onclick="copyOutput()">
+          Copy to Clipboard
+        </button>
+        <button class="clear-btn" onclick="clearAll()">Clear</button>
       </div>
     </div>
 
     <script>
-      const input = document.getElementById("input");
-      const output = document.getElementById("output");
-      const formatBtn = document.getElementById("formatBtn");
-      const copyBtn = document.getElementById("copyBtn");
-      const clearBtn = document.getElementById("clearBtn");
-      const uppercaseCheck = document.getElementById("uppercase");
-      const indentCheck = document.getElementById("indent");
-      const newlinesCheck = document.getElementById("newlines");
+      function formatSQL() {
+        const input = document.getElementById("input").value;
+        const indent = document.getElementById("indent").checked;
+        const newlines = document.getElementById("newlines").checked;
 
-      // SQL Keywords that should be uppercased
-      const keywords = [
-        "SELECT", "FROM", "WHERE", "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "OUTER",
-        "ON", "AND", "OR", "NOT", "IN", "EXISTS", "BETWEEN", "LIKE", "IS", "NULL",
-        "ORDER", "BY", "GROUP", "HAVING", "LIMIT", "OFFSET", "AS", "DISTINCT",
-        "COUNT", "SUM", "AVG", "MAX", "MIN", "CASE", "WHEN", "THEN", "ELSE", "END",
-        "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE", "CREATE", "TABLE",
-        "ALTER", "DROP", "INDEX", "VIEW", "DATABASE", "SCHEMA", "UNION", "ALL",
-        "INTERSECT", "EXCEPT", "WITH", "RECURSIVE", "OVER", "PARTITION", "ROWS",
-        "RANGE", "UNBOUNDED", "PRECEDING", "FOLLOWING", "CURRENT", "ROW",
-        "WINDOW", "CAST", "COALESCE", "NULLIF", "IFNULL", "SUBSTRING", "TRIM",
-        "UPPER", "LOWER", "LENGTH", "REPLACE", "CONCAT", "DATE", "TIMESTAMP",
-        "INTERVAL", "EXTRACT", "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND",
-        "PRIMARY", "KEY", "FOREIGN", "REFERENCES", "UNIQUE", "CHECK", "DEFAULT",
-        "CONSTRAINT", "CASCADE", "RESTRICT", "NO", "ACTION", "AUTOINCREMENT",
-        "SERIAL", "BOOLEAN", "INTEGER", "INT", "BIGINT", "SMALLINT", "DECIMAL",
-        "NUMERIC", "REAL", "FLOAT", "DOUBLE", "PRECISION", "VARCHAR", "CHAR",
-        "TEXT", "BLOB", "CLOB", "JSONB", "JSON", "ARRAY", "BEGIN", "COMMIT",
-        "ROLLBACK", "TRANSACTION", "SAVEPOINT", "RELEASE", "LOCK", "UNLOCK",
-        "GRANT", "REVOKE", "PRIVILEGES", "TO", "RETURNING", "LATERAL", "CROSS",
-        "NATURAL", "USING", "TRUE", "FALSE"
-      ];
-
-      // Major clause keywords that should start new lines
-      const majorClauses = [
-        "SELECT", "FROM", "WHERE", "JOIN", "INNER JOIN", "LEFT JOIN",
-        "RIGHT JOIN", "FULL JOIN", "FULL OUTER JOIN", "LEFT OUTER JOIN",
-        "RIGHT OUTER JOIN", "CROSS JOIN", "ORDER BY", "GROUP BY", "HAVING",
-        "LIMIT", "OFFSET", "UNION", "UNION ALL", "INTERSECT", "EXCEPT",
-        "INSERT INTO", "VALUES", "UPDATE", "SET", "DELETE FROM", "WITH"
-      ];
-
-      function formatSQL(sql) {
-        if (!sql.trim()) return "";
-
-        const useUppercase = uppercaseCheck.checked;
-        const useIndent = indentCheck.checked;
-        const useNewlines = newlinesCheck.checked;
-
-        // Tokenize SQL
-        const tokens = tokenizeSQL(sql);
-
-        // Format according to sqlstyle.guide
-        return formatTokens(tokens, useUppercase, useIndent, useNewlines);
+        const formatted = formatSQLString(input, indent, newlines);
+        document.getElementById("output").value = formatted;
       }
 
-      function tokenizeSQL(sql) {
-        const tokens = [];
-        let current = '';
-        let inString = false;
-        let stringChar = '';
+      function formatSQLString(sql, indent, newlines) {
+        if (!sql.trim()) return "";
 
-        for (let i = 0; i < sql.length; i++) {
-          const char = sql[i];
-          const prevChar = i > 0 ? sql[i - 1] : '';
+        // Remove extra whitespace and normalize
+        sql = sql.trim().replace(/\s+/g, " ");
 
-          // Handle string literals
-          if ((char === "'" || char === '"') && prevChar !== '\\') {
-            if (!inString) {
-              if (current.trim()) {
-                tokens.push({ type: 'text', value: current.trim() });
-                current = '';
-              }
-              inString = true;
-              stringChar = char;
-              current = char;
-            } else if (char === stringChar) {
-              current += char;
-              tokens.push({ type: 'string', value: current });
-              current = '';
-              inString = false;
-            } else {
-              current += char;
-            }
-            continue;
-          }
+        // Keywords to uppercase (always applied)
+        const keywords = [
+          "SELECT",
+          "FROM",
+          "WHERE",
+          "JOIN",
+          "LEFT",
+          "RIGHT",
+          "INNER",
+          "OUTER",
+          "ON",
+          "AND",
+          "OR",
+          "NOT",
+          "IN",
+          "EXISTS",
+          "BETWEEN",
+          "LIKE",
+          "IS",
+          "NULL",
+          "ORDER BY",
+          "GROUP BY",
+          "HAVING",
+          "LIMIT",
+          "OFFSET",
+          "INSERT",
+          "INTO",
+          "VALUES",
+          "UPDATE",
+          "SET",
+          "DELETE",
+          "CREATE",
+          "TABLE",
+          "ALTER",
+          "DROP",
+          "INDEX",
+          "VIEW",
+          "PRIMARY KEY",
+          "FOREIGN KEY",
+          "REFERENCES",
+          "CONSTRAINT",
+          "AS",
+          "DISTINCT",
+          "CASE",
+          "WHEN",
+          "THEN",
+          "ELSE",
+          "END",
+          "UNION",
+          "INTERSECT",
+          "EXCEPT",
+          "WITH",
+          "INT",
+          "VARCHAR",
+          "TEXT",
+          "TIMESTAMP",
+          "BOOLEAN",
+          "BOOL",
+          "DATE",
+          "SERIAL",
+          "BIGSERIAL",
+          "NUMERIC",
+          "DECIMAL",
+          "REAL",
+          "DOUBLE PRECISION",
+          "GENERATED ALWAYS",
+          "AS IDENTITY",
+          "WITH TIME ZONE",
+          "WITHOUT TIME ZONE",
+          "NOT NULL",
+          "DEFAULT",
+          "CHECK",
+          "UNIQUE",
+          "TRUE",
+          "FALSE",
+          "NOW",
+          "DATE_TRUNC",
+          "INTERVAL",
+          "COALESCE",
+          "CAST",
+        ];
 
-          if (inString) {
-            current += char;
-            continue;
-          }
+        // Sort by length (longest first) to handle multi-word keywords
+        keywords.sort((a, b) => b.length - a.length);
 
-          // Handle special characters
-          if ('(),;'.includes(char)) {
-            if (current.trim()) {
-              tokens.push({ type: 'text', value: current.trim() });
-            }
-            tokens.push({ type: 'symbol', value: char });
-            current = '';
-          } else if (char.match(/\s/)) {
-            if (current.trim()) {
-              tokens.push({ type: 'text', value: current.trim() });
-              current = '';
-            }
+        keywords.forEach((keyword) => {
+          const regex = new RegExp(`\\b${keyword}\\b`, "gi");
+          sql = sql.replace(regex, keyword.toUpperCase());
+        });
+
+        // Handle CREATE TABLE formatting
+        if (sql.toUpperCase().includes("CREATE TABLE")) {
+          return formatCreateTable(sql, indent);
+        }
+
+        // Handle SELECT statements
+        if (sql.toUpperCase().includes("SELECT") && newlines) {
+          return formatSelect(sql);
+        }
+
+        // Basic formatting for other statements
+        return sql;
+      }
+
+      function formatCreateTable(sql, indent) {
+        // Extract table name and columns
+        const createMatch = sql.match(/CREATE\s+TABLE\s+(\w+)\s*\((.*)\)/is);
+        if (!createMatch) return sql;
+
+        const tableName = createMatch[1];
+        const columnsStr = createMatch[2];
+
+        // Split columns by comma (but not within parentheses)
+        const columns = splitColumns(columnsStr);
+
+        if (!indent) {
+          return `CREATE TABLE ${tableName} (\n${columns.map((c) => "    " + c.trim()).join(",\n")}\n)`;
+        }
+
+        // Find the longest column name for alignment
+        const maxColLength = Math.max(
+          ...columns.map((col) => {
+            const match = col.trim().match(/^(\w+)/);
+            return match ? match[1].length : 0;
+          }),
+        );
+
+        // Format each column
+        const formattedColumns = columns.map((col) => {
+          col = col.trim();
+          const parts = col.split(/\s+/);
+          const colName = parts[0];
+          const rest = parts.slice(1).join(" ");
+
+          // Pad column name
+          const padding = " ".repeat(maxColLength - colName.length);
+          return `    ${colName}${padding} ${rest}`;
+        });
+
+        return `CREATE TABLE ${tableName} (\n${formattedColumns.join(",\n")}\n)`;
+      }
+
+      function formatSelect(sql) {
+        let result = sql;
+
+        // Add newlines before major clauses
+        result = result.replace(
+          /\s+(FROM|WHERE|JOIN|LEFT JOIN|RIGHT JOIN|INNER JOIN|ORDER BY|GROUP BY|HAVING|LIMIT)\s+/gi,
+          (match) => `\n${match.trim().toUpperCase()} `,
+        );
+
+        // Indent JOINs
+        result = result.replace(
+          /\n(LEFT|RIGHT|INNER)?\s*JOIN/gi,
+          "\n     JOIN",
+        );
+        result = result.replace(/\nLEFT JOIN/gi, "\n LEFT JOIN");
+        result = result.replace(/\nRIGHT JOIN/gi, "\nRIGHT JOIN");
+        result = result.replace(/\nINNER JOIN/gi, "\nINNER JOIN");
+
+        return result;
+      }
+
+      function splitColumns(str) {
+        const columns = [];
+        let current = "";
+        let parenDepth = 0;
+
+        for (let i = 0; i < str.length; i++) {
+          const char = str[i];
+          if (char === "(") parenDepth++;
+          if (char === ")") parenDepth--;
+
+          if (char === "," && parenDepth === 0) {
+            columns.push(current);
+            current = "";
           } else {
             current += char;
           }
         }
 
         if (current.trim()) {
-          tokens.push({ type: 'text', value: current.trim() });
+          columns.push(current);
         }
 
-        return tokens;
+        return columns;
       }
 
-      function formatTokens(tokens, useUppercase, useIndent, useNewlines) {
-        if (!useNewlines || !useIndent) {
-          // Simple formatting without structure
-          return tokens.map(t => {
-            if (t.type === 'text' && useUppercase) {
-              const upper = t.value.toUpperCase();
-              return keywords.includes(upper) ? upper : t.value;
-            }
-            return t.value;
-          }).join(' ').replace(/\s*([(),;])\s*/g, '$1 ').replace(/\s+/g, ' ').trim();
-        }
+      function copyOutput() {
+        const output = document.getElementById("output");
+        output.select();
+        document.execCommand("copy");
 
-        let result = [];
-        let depth = 0;
-        let currentClause = null;
-        let clauseStart = true;
-        let i = 0;
-        let inTableDefinition = false;
-        let parenDepth = 0;
-
-        while (i < tokens.length) {
-          const token = tokens[i];
-
-          if (token.type === 'symbol') {
-            if (token.value === '(') {
-              parenDepth++;
-              // Check if this is the start of CREATE TABLE column definitions
-              if (currentClause === 'CREATE TABLE' && parenDepth === 1) {
-                inTableDefinition = true;
-                result.push('\n(');
-                i++;
-                continue;
-              }
-              // For function calls or nested parens, keep inline
-              result.push('(');
-            } else if (token.value === ')') {
-              parenDepth--;
-              if (inTableDefinition && parenDepth === 0) {
-                // End of CREATE TABLE definition
-                result.push('\n)');
-                inTableDefinition = false;
-                i++;
-                continue;
-              }
-              result.push(')');
-            } else if (token.value === ';') {
-              result.push(';');
-            } else if (token.value === ',') {
-              result.push(',');
-              // Add newline after comma in table definition or column lists
-              if (inTableDefinition) {
-                result.push('\n  ');
-              } else {
-                const indent = getIndentForContinuation(currentClause, depth);
-                result.push('\n' + indent);
-              }
-            }
-            i++;
-            continue;
-          }
-
-          if (token.type === 'text') {
-            const upper = token.value.toUpperCase();
-            const isKeyword = keywords.includes(upper);
-            const text = (useUppercase && isKeyword) ? upper : token.value;
-
-            // Check for major clauses
-            if (isClauseKeyword(upper)) {
-              // Check for multi-word clauses
-              const multiWord = getMultiWordClause(tokens, i, useUppercase);
-              if (multiWord) {
-                if (!clauseStart && result.length > 0) {
-                  result.push('\n');
-                }
-                const indent = getIndentForClause(multiWord.clause, depth);
-                result.push(indent + multiWord.text);
-                currentClause = multiWord.clause;
-                clauseStart = false;
-                i += multiWord.consumed;
-                continue;
-              } else {
-                if (!clauseStart && result.length > 0) {
-                  result.push('\n');
-                }
-                const indent = getIndentForClause(upper, depth);
-                result.push(indent + text);
-                currentClause = upper;
-                clauseStart = false;
-                i++;
-                continue;
-              }
-            }
-
-            // Check for AND/OR at start of condition
-            if ((upper === 'AND' || upper === 'OR') &&
-                (currentClause === 'WHERE' || currentClause === 'HAVING' || currentClause === 'ON')) {
-              result.push('\n' + getIndentForLogicalOp(currentClause, depth) + text);
-              i++;
-              continue;
-            }
-
-            // Check for UNION
-            if (upper === 'UNION') {
-              const nextToken = tokens[i + 1];
-              if (nextToken && nextToken.type === 'text' && nextToken.value.toUpperCase() === 'ALL') {
-                result.push('\n\n' + '  '.repeat(depth) + text + ' ' +
-                           (useUppercase ? 'ALL' : nextToken.value) + '\n\n');
-                i += 2;
-                clauseStart = true;
-                currentClause = null;
-                continue;
-              } else {
-                result.push('\n\n' + '  '.repeat(depth) + text + '\n\n');
-                i++;
-                clauseStart = true;
-                currentClause = null;
-                continue;
-              }
-            }
-
-            // Regular text/keyword
-            if (result.length > 0 && result[result.length - 1] !== '\n' &&
-                result[result.length - 1] !== ' ' && !result[result.length - 1].endsWith(' ')) {
-              result.push(' ');
-            }
-            result.push(text);
-            clauseStart = false;
-          } else if (token.type === 'string') {
-            if (result.length > 0 && result[result.length - 1] !== '\n' &&
-                result[result.length - 1] !== ' ' && !result[result.length - 1].endsWith(' ')) {
-              result.push(' ');
-            }
-            result.push(token.value);
-          }
-
-          i++;
-        }
-
-        return result.join('').replace(/ +\n/g, '\n').replace(/\n\n\n+/g, '\n\n').trim();
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
       }
 
-      function isClauseKeyword(word) {
-        return ['SELECT', 'FROM', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'FULL',
-                'CROSS', 'ORDER', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'INSERT',
-                'UPDATE', 'DELETE', 'SET', 'VALUES', 'WITH', 'UNION', 'INTERSECT',
-                'EXCEPT', 'CREATE', 'ALTER', 'DROP', 'TABLE'].includes(word);
+      function clearAll() {
+        document.getElementById("input").value = "";
+        document.getElementById("output").value = "";
       }
 
-      function getMultiWordClause(tokens, startIndex, useUppercase) {
-        const combinations = [
-          ['INNER', 'JOIN'], ['LEFT', 'JOIN'], ['RIGHT', 'JOIN'], ['FULL', 'JOIN'],
-          ['LEFT', 'OUTER', 'JOIN'], ['RIGHT', 'OUTER', 'JOIN'], ['FULL', 'OUTER', 'JOIN'],
-          ['CROSS', 'JOIN'], ['ORDER', 'BY'], ['GROUP', 'BY'], ['UNION', 'ALL'],
-          ['INSERT', 'INTO'], ['DELETE', 'FROM'], ['CREATE', 'TABLE'], ['ALTER', 'TABLE'],
-          ['DROP', 'TABLE']
-        ];
-
-        for (const combo of combinations) {
-          let matches = true;
-          let consumed = 0;
-          const parts = [];
-
-          for (let j = 0; j < combo.length; j++) {
-            const token = tokens[startIndex + j];
-            if (!token || token.type !== 'text' || token.value.toUpperCase() !== combo[j]) {
-              matches = false;
-              break;
-            }
-            parts.push(useUppercase ? combo[j] : token.value);
-            consumed++;
-          }
-
-          if (matches) {
-            return {
-              clause: combo.join(' '),
-              text: parts.join(' '),
-              consumed: consumed
-            };
-          }
-        }
-
-        return null;
-      }
-
-      function getIndentForClause(clause, depth) {
-        const baseIndent = '  '.repeat(depth);
-
-        // Right-align keywords to create river pattern
-        const alignments = {
-          'SELECT': 1,
-          'FROM': 3,
-          'WHERE': 2,
-          'INNER JOIN': 1,
-          'LEFT JOIN': 2,
-          'RIGHT JOIN': 1,
-          'FULL JOIN': 2,
-          'LEFT OUTER JOIN': 1,
-          'RIGHT OUTER JOIN': 1,
-          'FULL OUTER JOIN': 1,
-          'CROSS JOIN': 1,
-          'JOIN': 3,
-          'GROUP BY': 2,
-          'ORDER BY': 2,
-          'HAVING': 2,
-          'LIMIT': 2,
-          'OFFSET': 2,
-          'UPDATE': 0,
-          'SET': 3,
-          'INSERT INTO': 0,
-          'DELETE FROM': 0,
-          'VALUES': 2,
-          'WITH': 0,
-          'UNION': 2,
-          'UNION ALL': 2,
-          'INTERSECT': 2,
-          'EXCEPT': 2,
-          'CREATE TABLE': 0,
-          'ALTER TABLE': 0,
-          'DROP TABLE': 0
-        };
-
-        const spaces = alignments[clause] || 0;
-        return baseIndent + ' '.repeat(spaces);
-      }
-
-      function getIndentForContinuation(currentClause, depth) {
-        const baseIndent = '  '.repeat(depth);
-
-        // Indentation for continuation lines (like column lists)
-        const continuations = {
-          'SELECT': baseIndent + '        ',
-          'SET': baseIndent + '       ',
-          'ORDER BY': baseIndent + '          ',
-          'GROUP BY': baseIndent + '          ',
-          'INSERT INTO': baseIndent + '       ',
-          'VALUES': baseIndent + '        '
-        };
-
-        return continuations[currentClause] || baseIndent + '       ';
-      }
-
-      function getIndentForLogicalOp(currentClause, depth) {
-        const baseIndent = '  '.repeat(depth);
-
-        // Indentation for AND/OR in conditions
-        return baseIndent + '     ';
-      }
-
-      formatBtn.addEventListener("click", () => {
-        const sql = input.value;
-        if (sql.trim()) {
-          output.value = formatSQL(sql);
-        }
+      // Auto-format on input
+      document.getElementById("input").addEventListener("input", () => {
+        formatSQL();
       });
 
-      // Auto-format on input with debounce
-      let debounceTimer;
-      input.addEventListener("input", () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-          const sql = input.value;
-          if (sql.trim()) {
-            output.value = formatSQL(sql);
-          } else {
-            output.value = "";
-          }
-        }, 500);
-      });
-
-      // Re-format when options change
-      [uppercaseCheck, indentCheck, newlinesCheck].forEach(checkbox => {
-        checkbox.addEventListener("change", () => {
-          if (input.value.trim()) {
-            output.value = formatSQL(input.value);
-          }
-        });
-      });
-
-      copyBtn.addEventListener("click", async () => {
-        if (output.value) {
-          await navigator.clipboard.writeText(output.value);
-          const originalText = copyBtn.textContent;
-          copyBtn.textContent = "Copied!";
-          copyBtn.classList.remove("secondary");
-          copyBtn.classList.add("success");
-
-          setTimeout(() => {
-            copyBtn.textContent = originalText;
-            copyBtn.classList.remove("success");
-            copyBtn.classList.add("secondary");
-          }, 2000);
-        }
-      });
-
-      clearBtn.addEventListener("click", () => {
-        input.value = "";
-        output.value = "";
-      });
+      // Auto-format when options change
+      document.getElementById("indent").addEventListener("change", formatSQL);
+      document.getElementById("newlines").addEventListener("change", formatSQL);
     </script>
   </body>
 </html>
