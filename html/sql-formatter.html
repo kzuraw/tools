@@ -238,128 +238,307 @@
       function formatSQL(sql) {
         if (!sql.trim()) return "";
 
-        let formatted = sql;
         const useUppercase = uppercaseCheck.checked;
         const useIndent = indentCheck.checked;
         const useNewlines = newlinesCheck.checked;
 
-        // Remove extra whitespace
-        formatted = formatted.replace(/\s+/g, " ").trim();
+        // Tokenize SQL
+        const tokens = tokenizeSQL(sql);
 
-        // Uppercase keywords if option is enabled
-        if (useUppercase) {
-          keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b${keyword}\\b`, "gi");
-            formatted = formatted.replace(regex, keyword.toUpperCase());
-          });
-        }
+        // Format according to sqlstyle.guide
+        return formatTokens(tokens, useUppercase, useIndent, useNewlines);
+      }
 
-        if (useNewlines) {
-          // Add newlines before major clauses
-          majorClauses.forEach(clause => {
-            const regex = new RegExp(`\\s+(${clause.replace(/ /g, "\\s+")})\\b`, "gi");
-            formatted = formatted.replace(regex, (match, p1) => {
-              return "\n" + (useUppercase ? p1.toUpperCase() : p1);
-            });
-          });
+      function tokenizeSQL(sql) {
+        const tokens = [];
+        let current = '';
+        let inString = false;
+        let stringChar = '';
 
-          // Ensure SELECT is at the start
-          formatted = formatted.replace(/^\s*\n/, "");
+        for (let i = 0; i < sql.length; i++) {
+          const char = sql[i];
+          const prevChar = i > 0 ? sql[i - 1] : '';
 
-          // Add newlines after commas in SELECT clause
-          formatted = formatted.replace(/,(\s*)(?=\S)/g, (match, space) => {
-            // Check if we're in a SELECT clause (before FROM)
-            return ",\n    ";
-          });
-
-          // Handle subqueries - add indentation
-          let depth = 0;
-          let result = "";
-          let inString = false;
-          let stringChar = "";
-
-          for (let i = 0; i < formatted.length; i++) {
-            const char = formatted[i];
-            const prevChar = i > 0 ? formatted[i - 1] : "";
-
-            // Track string literals
-            if ((char === "'" || char === '"') && prevChar !== "\\") {
-              if (!inString) {
-                inString = true;
-                stringChar = char;
-              } else if (char === stringChar) {
-                inString = false;
-              }
-            }
-
+          // Handle string literals
+          if ((char === "'" || char === '"') && prevChar !== '\\') {
             if (!inString) {
-              if (char === "(") {
-                depth++;
-                result += char;
-                // Add newline and indent after opening paren if next char isn't whitespace
-                if (i + 1 < formatted.length && formatted[i + 1].trim()) {
-                  result += "\n" + "    ".repeat(depth);
-                }
-                continue;
-              } else if (char === ")") {
-                depth--;
-                // Add newline and indent before closing paren
-                if (prevChar.trim() && prevChar !== "(") {
-                  result += "\n" + "    ".repeat(depth);
-                }
-                result += char;
-                continue;
+              if (current.trim()) {
+                tokens.push({ type: 'text', value: current.trim() });
+                current = '';
               }
+              inString = true;
+              stringChar = char;
+              current = char;
+            } else if (char === stringChar) {
+              current += char;
+              tokens.push({ type: 'string', value: current });
+              current = '';
+              inString = false;
+            } else {
+              current += char;
             }
-
-            result += char;
+            continue;
           }
 
-          formatted = result;
+          if (inString) {
+            current += char;
+            continue;
+          }
 
-          // Clean up excessive newlines
-          formatted = formatted.replace(/\n{3,}/g, "\n\n");
-          formatted = formatted.replace(/\n\s*\n\s*\n/g, "\n\n");
+          // Handle special characters
+          if ('(),;'.includes(char)) {
+            if (current.trim()) {
+              tokens.push({ type: 'text', value: current.trim() });
+            }
+            tokens.push({ type: 'symbol', value: char });
+            current = '';
+          } else if (char.match(/\s/)) {
+            if (current.trim()) {
+              tokens.push({ type: 'text', value: current.trim() });
+              current = '';
+            }
+          } else {
+            current += char;
+          }
         }
 
-        if (useIndent) {
-          // Apply consistent indentation
-          const lines = formatted.split("\n");
-          let indentLevel = 0;
-          const indentedLines = lines.map(line => {
-            const trimmed = line.trim();
-            if (!trimmed) return "";
-
-            // Decrease indent for closing parens
-            if (trimmed.startsWith(")")) {
-              indentLevel = Math.max(0, indentLevel - 1);
-            }
-
-            const indented = "    ".repeat(indentLevel) + trimmed;
-
-            // Increase indent for opening parens
-            if (trimmed.endsWith("(") || trimmed.includes("(") && !trimmed.includes(")")) {
-              indentLevel++;
-            }
-
-            // Adjust indent for major clauses at root level
-            if (indentLevel === 0 && majorClauses.some(clause =>
-              trimmed.toUpperCase().startsWith(clause.toUpperCase())
-            )) {
-              return trimmed;
-            }
-
-            return indented;
-          });
-
-          formatted = indentedLines.join("\n");
+        if (current.trim()) {
+          tokens.push({ type: 'text', value: current.trim() });
         }
 
-        // Final cleanup
-        formatted = formatted.replace(/\s+$/gm, ""); // Remove trailing spaces
-        formatted = formatted.trim();
+        return tokens;
+      }
 
-        return formatted;
+      function formatTokens(tokens, useUppercase, useIndent, useNewlines) {
+        if (!useNewlines || !useIndent) {
+          // Simple formatting without structure
+          return tokens.map(t => {
+            if (t.type === 'text' && useUppercase) {
+              const upper = t.value.toUpperCase();
+              return keywords.includes(upper) ? upper : t.value;
+            }
+            return t.value;
+          }).join(' ').replace(/\s*([(),;])\s*/g, '$1 ').replace(/\s+/g, ' ').trim();
+        }
+
+        let result = [];
+        let depth = 0;
+        let currentClause = null;
+        let clauseStart = true;
+        let i = 0;
+
+        while (i < tokens.length) {
+          const token = tokens[i];
+
+          if (token.type === 'symbol') {
+            if (token.value === '(') {
+              if (result.length > 0 && result[result.length - 1] !== '\n') {
+                result.push('\n');
+              }
+              result.push('  '.repeat(depth) + '(');
+              depth++;
+              clauseStart = true;
+              currentClause = null;
+            } else if (token.value === ')') {
+              depth--;
+              if (result[result.length - 1] === '\n') {
+                result.pop();
+              }
+              result.push('\n' + '  '.repeat(depth) + ')');
+              clauseStart = false;
+            } else if (token.value === ';') {
+              result.push(';');
+            } else if (token.value === ',') {
+              result.push(',');
+              // Add newline after comma and proper indentation
+              const indent = getIndentForContinuation(currentClause, depth);
+              result.push('\n' + indent);
+            }
+            i++;
+            continue;
+          }
+
+          if (token.type === 'text') {
+            const upper = token.value.toUpperCase();
+            const isKeyword = keywords.includes(upper);
+            const text = (useUppercase && isKeyword) ? upper : token.value;
+
+            // Check for major clauses
+            if (isClauseKeyword(upper)) {
+              // Check for multi-word clauses
+              const multiWord = getMultiWordClause(tokens, i, useUppercase);
+              if (multiWord) {
+                if (!clauseStart && result.length > 0) {
+                  result.push('\n');
+                }
+                const indent = getIndentForClause(multiWord.clause, depth);
+                result.push(indent + multiWord.text);
+                currentClause = multiWord.clause;
+                clauseStart = false;
+                i += multiWord.consumed;
+                continue;
+              } else {
+                if (!clauseStart && result.length > 0) {
+                  result.push('\n');
+                }
+                const indent = getIndentForClause(upper, depth);
+                result.push(indent + text);
+                currentClause = upper;
+                clauseStart = false;
+                i++;
+                continue;
+              }
+            }
+
+            // Check for AND/OR at start of condition
+            if ((upper === 'AND' || upper === 'OR') &&
+                (currentClause === 'WHERE' || currentClause === 'HAVING' || currentClause === 'ON')) {
+              result.push('\n' + getIndentForLogicalOp(currentClause, depth) + text);
+              i++;
+              continue;
+            }
+
+            // Check for UNION
+            if (upper === 'UNION') {
+              const nextToken = tokens[i + 1];
+              if (nextToken && nextToken.type === 'text' && nextToken.value.toUpperCase() === 'ALL') {
+                result.push('\n\n' + '  '.repeat(depth) + text + ' ' +
+                           (useUppercase ? 'ALL' : nextToken.value) + '\n\n');
+                i += 2;
+                clauseStart = true;
+                currentClause = null;
+                continue;
+              } else {
+                result.push('\n\n' + '  '.repeat(depth) + text + '\n\n');
+                i++;
+                clauseStart = true;
+                currentClause = null;
+                continue;
+              }
+            }
+
+            // Regular text/keyword
+            if (result.length > 0 && result[result.length - 1] !== '\n' &&
+                result[result.length - 1] !== ' ' && !result[result.length - 1].endsWith(' ')) {
+              result.push(' ');
+            }
+            result.push(text);
+            clauseStart = false;
+          } else if (token.type === 'string') {
+            if (result.length > 0 && result[result.length - 1] !== '\n' &&
+                result[result.length - 1] !== ' ' && !result[result.length - 1].endsWith(' ')) {
+              result.push(' ');
+            }
+            result.push(token.value);
+          }
+
+          i++;
+        }
+
+        return result.join('').replace(/ +\n/g, '\n').replace(/\n\n\n+/g, '\n\n').trim();
+      }
+
+      function isClauseKeyword(word) {
+        return ['SELECT', 'FROM', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'FULL',
+                'CROSS', 'ORDER', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'INSERT',
+                'UPDATE', 'DELETE', 'SET', 'VALUES', 'WITH', 'UNION', 'INTERSECT',
+                'EXCEPT'].includes(word);
+      }
+
+      function getMultiWordClause(tokens, startIndex, useUppercase) {
+        const combinations = [
+          ['INNER', 'JOIN'], ['LEFT', 'JOIN'], ['RIGHT', 'JOIN'], ['FULL', 'JOIN'],
+          ['LEFT', 'OUTER', 'JOIN'], ['RIGHT', 'OUTER', 'JOIN'], ['FULL', 'OUTER', 'JOIN'],
+          ['CROSS', 'JOIN'], ['ORDER', 'BY'], ['GROUP', 'BY'], ['UNION', 'ALL'],
+          ['INSERT', 'INTO'], ['DELETE', 'FROM']
+        ];
+
+        for (const combo of combinations) {
+          let matches = true;
+          let consumed = 0;
+          const parts = [];
+
+          for (let j = 0; j < combo.length; j++) {
+            const token = tokens[startIndex + j];
+            if (!token || token.type !== 'text' || token.value.toUpperCase() !== combo[j]) {
+              matches = false;
+              break;
+            }
+            parts.push(useUppercase ? combo[j] : token.value);
+            consumed++;
+          }
+
+          if (matches) {
+            return {
+              clause: combo.join(' '),
+              text: parts.join(' '),
+              consumed: consumed
+            };
+          }
+        }
+
+        return null;
+      }
+
+      function getIndentForClause(clause, depth) {
+        const baseIndent = '  '.repeat(depth);
+
+        // Right-align keywords to create river pattern
+        const alignments = {
+          'SELECT': 1,
+          'FROM': 3,
+          'WHERE': 2,
+          'INNER JOIN': 1,
+          'LEFT JOIN': 2,
+          'RIGHT JOIN': 1,
+          'FULL JOIN': 2,
+          'LEFT OUTER JOIN': 1,
+          'RIGHT OUTER JOIN': 1,
+          'FULL OUTER JOIN': 1,
+          'CROSS JOIN': 1,
+          'JOIN': 3,
+          'GROUP BY': 2,
+          'ORDER BY': 2,
+          'HAVING': 2,
+          'LIMIT': 2,
+          'OFFSET': 2,
+          'UPDATE': 0,
+          'SET': 3,
+          'INSERT INTO': 0,
+          'DELETE FROM': 0,
+          'VALUES': 2,
+          'WITH': 0,
+          'UNION': 2,
+          'UNION ALL': 2,
+          'INTERSECT': 2,
+          'EXCEPT': 2
+        };
+
+        const spaces = alignments[clause] || 0;
+        return baseIndent + ' '.repeat(spaces);
+      }
+
+      function getIndentForContinuation(currentClause, depth) {
+        const baseIndent = '  '.repeat(depth);
+
+        // Indentation for continuation lines (like column lists)
+        const continuations = {
+          'SELECT': baseIndent + '        ',
+          'SET': baseIndent + '       ',
+          'ORDER BY': baseIndent + '          ',
+          'GROUP BY': baseIndent + '          ',
+          'INSERT INTO': baseIndent + '       ',
+          'VALUES': baseIndent + '        '
+        };
+
+        return continuations[currentClause] || baseIndent + '       ';
+      }
+
+      function getIndentForLogicalOp(currentClause, depth) {
+        const baseIndent = '  '.repeat(depth);
+
+        // Indentation for AND/OR in conditions
+        return baseIndent + '     ';
       }
 
       formatBtn.addEventListener("click", () => {
