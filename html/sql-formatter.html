@@ -326,33 +326,45 @@
         let currentClause = null;
         let clauseStart = true;
         let i = 0;
+        let inTableDefinition = false;
+        let parenDepth = 0;
 
         while (i < tokens.length) {
           const token = tokens[i];
 
           if (token.type === 'symbol') {
             if (token.value === '(') {
-              if (result.length > 0 && result[result.length - 1] !== '\n') {
-                result.push('\n');
+              parenDepth++;
+              // Check if this is the start of CREATE TABLE column definitions
+              if (currentClause === 'CREATE TABLE' && parenDepth === 1) {
+                inTableDefinition = true;
+                result.push('\n(');
+                i++;
+                continue;
               }
-              result.push('  '.repeat(depth) + '(');
-              depth++;
-              clauseStart = true;
-              currentClause = null;
+              // For function calls or nested parens, keep inline
+              result.push('(');
             } else if (token.value === ')') {
-              depth--;
-              if (result[result.length - 1] === '\n') {
-                result.pop();
+              parenDepth--;
+              if (inTableDefinition && parenDepth === 0) {
+                // End of CREATE TABLE definition
+                result.push('\n)');
+                inTableDefinition = false;
+                i++;
+                continue;
               }
-              result.push('\n' + '  '.repeat(depth) + ')');
-              clauseStart = false;
+              result.push(')');
             } else if (token.value === ';') {
               result.push(';');
             } else if (token.value === ',') {
               result.push(',');
-              // Add newline after comma and proper indentation
-              const indent = getIndentForContinuation(currentClause, depth);
-              result.push('\n' + indent);
+              // Add newline after comma in table definition or column lists
+              if (inTableDefinition) {
+                result.push('\n  ');
+              } else {
+                const indent = getIndentForContinuation(currentClause, depth);
+                result.push('\n' + indent);
+              }
             }
             i++;
             continue;
@@ -442,7 +454,7 @@
         return ['SELECT', 'FROM', 'WHERE', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'FULL',
                 'CROSS', 'ORDER', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'INSERT',
                 'UPDATE', 'DELETE', 'SET', 'VALUES', 'WITH', 'UNION', 'INTERSECT',
-                'EXCEPT'].includes(word);
+                'EXCEPT', 'CREATE', 'ALTER', 'DROP', 'TABLE'].includes(word);
       }
 
       function getMultiWordClause(tokens, startIndex, useUppercase) {
@@ -450,7 +462,8 @@
           ['INNER', 'JOIN'], ['LEFT', 'JOIN'], ['RIGHT', 'JOIN'], ['FULL', 'JOIN'],
           ['LEFT', 'OUTER', 'JOIN'], ['RIGHT', 'OUTER', 'JOIN'], ['FULL', 'OUTER', 'JOIN'],
           ['CROSS', 'JOIN'], ['ORDER', 'BY'], ['GROUP', 'BY'], ['UNION', 'ALL'],
-          ['INSERT', 'INTO'], ['DELETE', 'FROM']
+          ['INSERT', 'INTO'], ['DELETE', 'FROM'], ['CREATE', 'TABLE'], ['ALTER', 'TABLE'],
+          ['DROP', 'TABLE']
         ];
 
         for (const combo of combinations) {
@@ -511,7 +524,10 @@
           'UNION': 2,
           'UNION ALL': 2,
           'INTERSECT': 2,
-          'EXCEPT': 2
+          'EXCEPT': 2,
+          'CREATE TABLE': 0,
+          'ALTER TABLE': 0,
+          'DROP TABLE': 0
         };
 
         const spaces = alignments[clause] || 0;
