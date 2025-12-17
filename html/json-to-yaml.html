@@ -276,13 +276,15 @@ function jsonToYaml(json, indent = 0) {
       return "[]";
     }
 
-    // Check if it's a simple array (all primitives)
+    // Check if it's a simple array (all primitives - strings, numbers, or booleans)
     const isSimple = json.every(
       (item) =>
-        typeof item !== "object" || item === null
+        typeof item === "string" || 
+        typeof item === "number" || 
+        typeof item === "boolean"
     );
 
-    if (isSimple && json.every((item) => typeof item === "string" || typeof item === "number")) {
+    if (isSimple) {
       const items = json.map((item) => jsonToYaml(item, 0));
       return `[${items.join(", ")}]`;
     }
@@ -312,7 +314,7 @@ function jsonToYaml(json, indent = 0) {
 
     keys.forEach((key, index) => {
       const value = json[key];
-      const needsQuotes = /[:#\[\]{}&*!|>'"@`]/.test(key) || /^\d/.test(key);
+      const needsQuotes = /[:#\[\]{}&*!|>'"@`%\-]/.test(key) || /^\d/.test(key) || /^-/.test(key);
       const formattedKey = needsQuotes ? `"${key}"` : key;
 
       if (typeof value === "object" && value !== null && !Array.isArray(value)) {
