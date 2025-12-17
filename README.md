@@ -7,6 +7,7 @@ A collection of web-based utility tools for developers and content creators. The
 - **[Certificate Converter](https://kzuraw.github.io/tools/html/cert-converter.html)** - convert certificates between different formats
 - **[Git Commit Formatter](https://kzuraw.github.io/tools/html/git-commit-formatter.html)** - format commit messages with proper structure and line wrapping
 - **[GitHub Alert Copier](https://kzuraw.github.io/tools/html/github-alert-copier.html)** - copy GitHub alerts as HTML
+- **[JSON to YAML Converter](https://kzuraw.github.io/tools/html/json-to-yaml.html)** - convert JSON to YAML format
 - **[Link to Markdown Table](https://kzuraw.github.io/tools/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://kzuraw.github.io/tools/html/markdown-to-rich-text.html)** - convert markdown to rich text
 - **[SQL Formatter](https://kzuraw.github.io/tools/html/sql-formatter.html)** - format SQL queries
