@@ -241,6 +241,37 @@
       footer a:hover {
         text-decoration: underline;
       }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 20px 12px;
+        }
+
+        .container {
+          padding: 24px 20px;
+        }
+
+        h1 {
+          font-size: 24px;
+          margin-bottom: 24px;
+        }
+
+        .actions {
+          flex-wrap: wrap;
+        }
+
+        .actions button {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .success-message {
+          flex-basis: 100%;
+          margin-left: 0;
+          margin-top: 8px;
+          text-align: center;
+        }
+      }
     </style>
   </head>
   <body>
