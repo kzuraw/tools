@@ -132,13 +132,11 @@
         transform: translateY(1px);
       }
 
-      .copy-btn,
       .clear-btn {
         background: #e5e5e5;
         color: #1a1a1a;
       }
 
-      .copy-btn:hover,
       .clear-btn:hover {
         background: #d4d4d4;
       }
@@ -195,8 +193,7 @@
       ></textarea>
 
       <div class="actions">
-        <button onclick="formatSQL()">Format SQL</button>
-        <button class="copy-btn" onclick="copyOutput()">
+        <button onclick="copyOutput()">
           Copy to Clipboard
         </button>
         <button class="clear-btn" onclick="clearAll()">Clear</button>
