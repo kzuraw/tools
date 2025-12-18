@@ -133,7 +133,7 @@ Each tool in `html/` follows this pattern:
 
 ### Common Patterns
 
-- **Colors:** Primary blue `#007bff` or `#0071e3`, backgrounds `#f5f5f7`, text `#1d1d1f`
+- **Colors:** Primary blue `#0071e3` (tool pages), `#007bff` (index.html), backgrounds `#f5f5f7`, text `#1d1d1f`
 - **Typography:** System fonts stack: `-apple-system, BlinkMacSystemFont, "Segoe UI", ...`
 - **Monospace:** `"SF Mono", Monaco, monospace` for code/technical content
 - **Button animations:** Subtle hover effects, `:active` scale transforms
