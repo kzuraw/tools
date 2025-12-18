@@ -130,6 +130,7 @@ Each tool in `html/` follows this pattern:
 4. **Privacy-first:** All processing happens client-side; no data sent to servers
 5. **Responsive:** Mobile-friendly layouts
 6. **Footer navigation:** Every tool page links back to home and GitHub
+7. **No frameworks:** Never use React or other frameworks—always plain HTML and vanilla JavaScript with minimal dependencies
 
 ### Common Patterns
 
@@ -139,6 +140,7 @@ Each tool in `html/` follows this pattern:
 - **Button animations:** Subtle hover effects, `:active` scale transforms
 - **Clipboard API:** Most tools use `navigator.clipboard.writeText()` for copying
 - **No jQuery:** Pure vanilla JavaScript throughout
+- **CSS indentation:** Use 2 spaces for CSS indentation within `<style>` tags
 
 ## Adding a New Tool
 
