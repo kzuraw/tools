@@ -19,19 +19,32 @@ def convert_filename(filename: str) -> str | None:
     
     Returns the new filename if pattern matches, None otherwise.
     """
-    # Pattern to match: YYYY-MM-DD - <name> - <invoice_no>.pdf
-    # Captures date, name, and invoice number
-    pattern = r'^(\d{4}-\d{2}-\d{2})\s*-\s*(.+?)\s*-\s*(.+?)\.pdf$'
+    # Check if it's a PDF file
+    if not filename.lower().endswith('.pdf'):
+        return None
     
-    match = re.match(pattern, filename, re.IGNORECASE)
+    # Remove the .pdf extension for easier parsing
+    name_without_ext = filename[:-4]
+    
+    # Pattern to match the date at the beginning
+    date_pattern = r'^(\d{4}-\d{2}-\d{2})\s*-\s*(.+)$'
+    match = re.match(date_pattern, name_without_ext)
+    
     if not match:
         return None
     
-    date, name, invoice_no = match.groups()
+    date, remainder = match.groups()
     
-    # Clean up any extra whitespace
-    name = name.strip()
-    invoice_no = invoice_no.strip()
+    # Find the last occurrence of ' - ' to split name from invoice_no
+    # This handles cases where the name itself contains ' - '
+    last_separator_idx = remainder.rfind(' - ')
+    
+    if last_separator_idx == -1:
+        # No second separator found, doesn't match the pattern
+        return None
+    
+    name = remainder[:last_separator_idx].strip()
+    invoice_no = remainder[last_separator_idx + 3:].strip()  # +3 to skip ' - '
     
     # Create new filename with underscores
     new_filename = f"{date}_{name}_{invoice_no}.pdf"
@@ -90,7 +103,7 @@ def main(directory: str, dry_run: bool):
                 pdf_file.rename(new_path)
                 click.echo(f"✅ Renamed: {old_filename} -> {new_filename}")
                 renamed_count += 1
-            except Exception as e:
+            except (OSError, PermissionError) as e:
                 click.echo(f"❌ Error renaming {old_filename}: {e}")
                 skipped_count += 1
     
