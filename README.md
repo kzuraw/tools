@@ -1,6 +1,6 @@
-# tools
+# Tools
 
-A collection of web-based utility tools for developers and content creators. These tools run entirely in the browser with no server-side processing, ensuring privacy and fast performance.
+A collection of web-based and python utility tools. These tools run entirely in the browser with no server-side processing, ensuring privacy and fast performance.
 
 ## Available Tools
 
@@ -11,22 +11,18 @@ A collection of web-based utility tools for developers and content creators. The
 - **[Markdown to Rich Text](https://kzuraw.github.io/tools/html/markdown-to-rich-text.html)** - convert markdown to rich text
 - **[SQL Formatter](https://kzuraw.github.io/tools/html/sql-formatter.html)** - format SQL queries
 
+## Python Scripts
+
+- **Invoice Renamer** (`python/rename_invoices.py`) - rename PDF invoice files from "YYYY-MM-DD - name - invoice_no.pdf" to "YYYY-MM-DD_name_invoice_no.pdf" format
+  ```bash
+  uv run python/rename_invoices.py <directory> [--dry-run]
+  ```
+
 ## Usage
 
 Visit [https://kzuraw.github.io/tools/](https://kzuraw.github.io/tools/) to access all tools.
 
 All tools are client-side only - your data never leaves your browser.
-
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-### Adding a New Tool
-
-1. Create a new HTML file in the `html/` directory
-2. Add your tool to `index.html` with a link and description
-3. Update this README with the new tool in the Available Tools section
-4. Test your tool locally by opening the HTML file in a browser
 
 ### Development
 
