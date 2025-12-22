@@ -13,10 +13,13 @@ A collection of web-based and python utility tools. These tools run entirely in 
 
 ## Python Scripts
 
-- **Invoice Renamer** (`python/rename_invoices.py`) - rename PDF invoice files from "YYYY-MM-DD - name - invoice_no.pdf" to "YYYY-MM-DD_name_invoice_no.pdf" format
-  ```bash
-  uv run python/rename_invoices.py <directory> [--dry-run]
-  ```
+### Invoice Renamer (`python/rename_invoices.py`)
+
+Rename PDF invoice files from "YYYY-MM-DD - name - invoice_no.pdf" to "YYYY-MM-DD_name_invoice_no.pdf" format
+
+```bash
+uv run python/rename_invoices.py <directory> [--dry-run]
+```
 
 ## Usage
 
