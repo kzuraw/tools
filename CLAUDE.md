@@ -47,7 +47,6 @@ GitHub Pages auto-deploys from `main` branch via `.github/workflows/pages.yml`. 
 1. Create `html/new-tool.html` following existing pattern
 2. Add entry to `index.html` tool list
 3. Include footer with navigation links
-4. When creating PR attach screenshots with how the tool looks like
 
 ### Python Script
 
