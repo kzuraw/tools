@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Certificate to Single Line Converter</title>
+    <title>Certificate Converter</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
     <style>
       * {
@@ -49,7 +49,7 @@
 
       textarea:focus {
         outline: none;
-        border-color: #0071e3;
+        border-color: #0066cc;
       }
 
       #input {
@@ -78,7 +78,7 @@
       }
 
       .primary {
-        background: #0071e3;
+        background: #0066cc;
         color: white;
       }
 
@@ -93,6 +93,15 @@
 
       .secondary:hover {
         background: #d2d2d7;
+      }
+
+      .secondary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .secondary:disabled:hover {
+        background: #e8e8ed;
       }
 
       .success {
@@ -117,7 +126,7 @@
       }
 
       footer a {
-        color: #0071e3;
+        color: #0066cc;
         text-decoration: none;
         margin: 0 10px;
       }
@@ -162,19 +171,25 @@
         const text = input.value.trim();
         if (!text) {
           output.value = "";
+          reverseBtn.disabled = true;
           return;
         }
 
         // Auto-detect conversion direction
-        // If text contains literal \n strings (not actual newlines), convert to newlines
-        // Otherwise, convert newlines to literal \n
-        if (text.includes("\\n") && !text.includes("\n")) {
+        // Check if text contains the literal string \n (two characters: \ and n)
+        // vs actual newline characters
+        const hasLiteralBackslashN = text.includes('\\n');
+        const hasActualNewlines = text.includes('\n');
+
+        if (hasLiteralBackslashN && !hasActualNewlines) {
           // Has literal \n but no actual newlines -> restore newlines
-          output.value = text.replace(/\\n/g, "\n");
+          output.value = text.replace(/\\\\n/g, '\n');
         } else {
-          // Has actual newlines -> convert to single line
-          output.value = text.replace(/\n/g, "\\n");
+          // Has actual newlines -> convert to single line with literal \n
+          output.value = text.replace(/\n/g, '\\\\n');
         }
+
+        reverseBtn.disabled = false;
       }
 
       input.addEventListener("input", convertCertificate);
@@ -208,7 +223,11 @@
       clearBtn.addEventListener("click", () => {
         input.value = "";
         output.value = "";
+        reverseBtn.disabled = true;
       });
+
+      // Set initial state
+      reverseBtn.disabled = true;
     </script>
 
     <footer>
