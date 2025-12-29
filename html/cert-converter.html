@@ -169,9 +169,10 @@
 
       /**
        * Auto-detects conversion direction and converts certificate format.
-       * - If input contains literal \n strings: converts to actual newlines
-       * - If input contains actual newlines: converts to literal \n strings
-       * - If input contains both: prioritizes newline-to-literal conversion with warning
+       * - If input has ONLY literal \n: converts to actual newlines (for SSL parsing)
+       * - If input has ONLY newlines: converts to single-line with literal \n
+       * - If input has both: prioritizes converting actual newlines to literal \n
+       * - If input has neither: returns input unchanged
        */
       function convertCertificate() {
         const text = input.value.trim();
@@ -181,23 +182,27 @@
           return;
         }
 
-        // Auto-detect conversion direction
-        // Check if text contains the literal string \n (two characters: \ and n)
-        // vs actual newline characters
-        const hasLiteralBackslashN = text.includes('\\n');
-        const hasActualNewlines = text.includes('\n');
+        // Check what the input contains
+        // Note: In JS strings, '\\n' is backslash+n (2 chars), '\n' is newline (1 char)
+        const hasLiteralBackslashN = text.indexOf('\\n') !== -1;
+        const hasActualNewlines = text.indexOf('\n') !== -1;
 
-        // Handle edge case: mixed content
+        // Explicit handling of all cases
         if (hasLiteralBackslashN && hasActualNewlines) {
+          // Mixed content - prioritize converting newlines to literal \n
           console.warn('Input contains both literal \\n and actual newlines. Converting actual newlines to literal \\n.');
-        }
-
-        if (hasLiteralBackslashN && !hasActualNewlines) {
-          // Has literal \n but no actual newlines -> restore newlines
-          output.value = text.replace(/\\n/g, '\n');
-        } else {
-          // Has actual newlines (or mixed content) -> convert to single line with literal \n
+          // First convert actual newlines to literal \n
           output.value = text.replace(/\n/g, '\\n');
+        } else if (hasLiteralBackslashN && !hasActualNewlines) {
+          // ONLY literal \n -> convert to actual newlines (fixes SSL error)
+          // This handles certificates from environment variables stored as "CERT\nDATA"
+          output.value = text.replace(/\\n/g, '\n');
+        } else if (!hasLiteralBackslashN && hasActualNewlines) {
+          // ONLY actual newlines -> convert to single-line with literal \n
+          output.value = text.replace(/\n/g, '\\n');
+        } else {
+          // Neither (plain single-line text) -> no conversion needed
+          output.value = text;
         }
 
         reverseBtn.disabled = false;
