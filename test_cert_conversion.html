@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Certificate Conversion Logic</title>
+</head>
+<body>
+  <h1>Certificate Conversion Tests</h1>
+  <pre id="results"></pre>
+
+  <script>
+    function test(name, input, expected) {
+      // Simulate the conversion logic
+      const hasLiteralBackslashN = input.includes('\\n');
+      const hasActualNewlines = input.includes('\n');
+
+      let output;
+      if (hasLiteralBackslashN && !hasActualNewlines) {
+        output = input.replace(/\\n/g, '\n');
+      } else {
+        output = input.replace(/\n/g, '\\n');
+      }
+
+      const passed = output === expected;
+      return { name, passed, input: JSON.stringify(input), output: JSON.stringify(output), expected: JSON.stringify(expected) };
+    }
+
+    const results = [];
+
+    // Test 1: Multi-line to single-line
+    results.push(test(
+      'Multi-line to single-line',
+      '-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----',
+      '-----BEGIN CERTIFICATE-----\\nMIIC...\\n-----END CERTIFICATE-----'
+    ));
+
+    // Test 2: Single-line with literal \n to multi-line
+    results.push(test(
+      'Single-line with literal \\n to multi-line',
+      '-----BEGIN CERTIFICATE-----\\nMIIC...\\n-----END CERTIFICATE-----',
+      '-----BEGIN CERTIFICATE-----\nMIIC...\n-----END CERTIFICATE-----'
+    ));
+
+    // Test 3: Already single-line (should add \n)
+    results.push(test(
+      'Single line without newlines',
+      '-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----',
+      '-----BEGIN CERTIFICATE-----MIIC...-----END CERTIFICATE-----'
+    ));
+
+    // Display results
+    const resultsEl = document.getElementById('results');
+    let output = '';
+    let allPassed = true;
+
+    results.forEach(r => {
+      const status = r.passed ? '✅ PASS' : '❌ FAIL';
+      output += `${status}: ${r.name}\n`;
+      output += `  Input:    ${r.input}\n`;
+      output += `  Output:   ${r.output}\n`;
+      output += `  Expected: ${r.expected}\n\n`;
+      if (!r.passed) allPassed = false;
+    });
+
+    output = `${allPassed ? '✅ ALL TESTS PASSED!' : '❌ SOME TESTS FAILED'}\n\n${output}`;
+    resultsEl.textContent = output;
+  </script>
+</body>
+</html>

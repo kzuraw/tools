@@ -183,10 +183,10 @@
 
         if (hasLiteralBackslashN && !hasActualNewlines) {
           // Has literal \n but no actual newlines -> restore newlines
-          output.value = text.replace(/\\\\n/g, '\n');
+          output.value = text.replace(/\\n/g, '\n');
         } else {
           // Has actual newlines -> convert to single line with literal \n
-          output.value = text.replace(/\n/g, '\\\\n');
+          output.value = text.replace(/\n/g, '\\n');
         }
 
         reverseBtn.disabled = false;
