@@ -129,23 +129,24 @@
   </head>
   <body>
     <div class="container">
-      <h1>Certificate to Single Line</h1>
+      <h1>Certificate Converter</h1>
 
       <label for="input">Paste Certificate</label>
       <textarea
         id="input"
-        placeholder="Paste your certificate here (PEM, CRT, etc.)"
+        placeholder="Paste your certificate here (PEM, CRT, or single-line with \n)"
       ></textarea>
 
-      <label for="output">Single Line Output</label>
+      <label for="output">Converted Output</label>
       <textarea
         id="output"
         readonly
-        placeholder="Single line version will appear here"
+        placeholder="Converted version will appear here"
       ></textarea>
 
       <div class="button-group">
         <button id="copyBtn" class="primary">Copy to Clipboard</button>
+        <button id="reverseBtn" class="secondary">Reverse Conversion</button>
         <button id="clearBtn" class="secondary">Clear</button>
       </div>
     </div>
@@ -154,17 +155,29 @@
       const input = document.getElementById("input");
       const output = document.getElementById("output");
       const copyBtn = document.getElementById("copyBtn");
+      const reverseBtn = document.getElementById("reverseBtn");
       const clearBtn = document.getElementById("clearBtn");
 
-      input.addEventListener("input", () => {
+      function convertCertificate() {
         const text = input.value.trim();
-        if (text) {
-          const singleLine = text.replace(/\n/g, "\\n");
-          output.value = singleLine;
-        } else {
+        if (!text) {
           output.value = "";
+          return;
         }
-      });
+
+        // Auto-detect conversion direction
+        // If text contains literal \n strings (not actual newlines), convert to newlines
+        // Otherwise, convert newlines to literal \n
+        if (text.includes("\\n") && !text.includes("\n")) {
+          // Has literal \n but no actual newlines -> restore newlines
+          output.value = text.replace(/\\n/g, "\n");
+        } else {
+          // Has actual newlines -> convert to single line
+          output.value = text.replace(/\n/g, "\\n");
+        }
+      }
+
+      input.addEventListener("input", convertCertificate);
 
       copyBtn.addEventListener("click", async () => {
         if (output.value) {
@@ -179,6 +192,16 @@
             copyBtn.classList.remove("success");
             copyBtn.classList.add("primary");
           }, 2000);
+        }
+      });
+
+      reverseBtn.addEventListener("click", () => {
+        if (output.value) {
+          // Swap input and output
+          const temp = output.value;
+          input.value = temp;
+          output.value = "";
+          convertCertificate();
         }
       });
 
