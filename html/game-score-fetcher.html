@@ -190,6 +190,58 @@ button:disabled {
   text-align: center;
 }
 
+.api-key-box {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 24px;
+}
+
+.api-key-box label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #1d1d1f;
+}
+
+.api-key-box .hint {
+  font-size: 12px;
+  color: #86868b;
+  margin-top: 8px;
+}
+
+.api-key-box .hint a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.api-key-box .hint a:hover {
+  text-decoration: underline;
+}
+
+input[type="password"] {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 16px;
+  border: 1px solid #d2d2d7;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input[type="password"]:focus {
+  border-color: #0066cc;
+}
+
+.api-key-saved {
+  display: inline-block;
+  font-size: 12px;
+  color: #34c759;
+  margin-left: 8px;
+}
+
 footer {
   margin-top: 40px;
   padding-top: 20px;
@@ -214,8 +266,14 @@ footer a:hover {
     <h1>Game Scores</h1>
     <p class="subtitle">Fetch Metacritic & OpenCritic scores</p>
 
+    <div class="api-key-box">
+      <label for="apiKey">Anthropic API Key<span class="api-key-saved" id="apiKeySaved"></span></label>
+      <input type="password" id="apiKey" placeholder="sk-ant-...">
+      <p class="hint">Get your API key from <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a></p>
+    </div>
+
     <div class="search-box">
-      <input type="text" id="gameInput" placeholder="Paste game title..." autofocus>
+      <input type="text" id="gameInput" placeholder="Paste game title...">
       <button id="searchBtn">Fetch Scores</button>
     </div>
 
@@ -223,11 +281,52 @@ footer a:hover {
   </div>
 
 <script type="module">
+const STORAGE_KEY = 'anthropic_api_key';
 const input = document.getElementById('gameInput');
 const btn = document.getElementById('searchBtn');
 const results = document.getElementById('results');
+const apiKeyInput = document.getElementById('apiKey');
+const apiKeySaved = document.getElementById('apiKeySaved');
+
+// Load saved API key
+const savedKey = localStorage.getItem(STORAGE_KEY);
+if (savedKey) {
+  apiKeyInput.value = savedKey;
+  apiKeySaved.textContent = '(saved)';
+}
+
+// Save API key on change
+apiKeyInput.addEventListener('change', () => {
+  const key = apiKeyInput.value.trim();
+  if (key) {
+    localStorage.setItem(STORAGE_KEY, key);
+    apiKeySaved.textContent = '(saved)';
+  } else {
+    localStorage.removeItem(STORAGE_KEY);
+    apiKeySaved.textContent = '';
+  }
+});
+
+function getApiKey() {
+  return apiKeyInput.value.trim() || localStorage.getItem(STORAGE_KEY);
+}
+
+function showError(message) {
+  results.className = 'results visible';
+  results.textContent = '';
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error';
+  errorDiv.textContent = message;
+  results.appendChild(errorDiv);
+}
 
 async function fetchScores(gameTitle) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    showError('Please enter your Anthropic API key.');
+    return;
+  }
+
   results.className = 'results visible';
   results.innerHTML = `
     <div class="loading">
@@ -241,6 +340,9 @@ async function fetchScores(gameTitle) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
@@ -271,6 +373,11 @@ Use null for any scores you can't find. Use the most relevant platform version i
       })
     });
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error?.message || `API error: ${response.status}`);
+    }
+
     const data = await response.json();
 
     let textContent = '';
@@ -289,47 +396,97 @@ Use null for any scores you can't find. Use the most relevant platform version i
     displayResults(gameData);
 
   } catch (err) {
-    results.innerHTML = `<div class="error">Error fetching scores. Please try again.</div>`;
+    showError(err.message || 'Error fetching scores. Please try again.');
     console.error(err);
   }
 }
 
+function isValidUrl(string) {
+  try {
+    const url = new URL(string);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 function displayResults(data) {
-  const metacriticDisplay = data.metacritic !== null
-    ? `<span class="score-value">${data.metacritic}</span>`
-    : `<span class="score-value na">N/A</span>`;
+  results.textContent = '';
 
-  const opencriticDisplay = data.opencritic !== null
-    ? `<span class="score-value">${data.opencritic}</span>`
-    : `<span class="score-value na">N/A</span>`;
+  // Game title
+  const titleDiv = document.createElement('div');
+  titleDiv.className = 'game-title';
+  titleDiv.textContent = data.title || 'Unknown Title';
+  results.appendChild(titleDiv);
 
-  let links = '<div class="links">';
-  if (data.metacriticUrl) {
-    links += `<a href="${data.metacriticUrl}" target="_blank">Metacritic</a>`;
+  // Scores container
+  const scoresDiv = document.createElement('div');
+  scoresDiv.className = 'scores';
+
+  // Metacritic score card
+  const metacriticCard = document.createElement('div');
+  metacriticCard.className = 'score-card';
+  const metacriticSource = document.createElement('div');
+  metacriticSource.className = 'score-source';
+  metacriticSource.textContent = 'Metacritic';
+  const metacriticValue = document.createElement('span');
+  metacriticValue.className = data.metacritic !== null ? 'score-value' : 'score-value na';
+  metacriticValue.textContent = data.metacritic !== null ? data.metacritic : 'N/A';
+  metacriticCard.appendChild(metacriticSource);
+  metacriticCard.appendChild(metacriticValue);
+  scoresDiv.appendChild(metacriticCard);
+
+  // OpenCritic score card
+  const opencriticCard = document.createElement('div');
+  opencriticCard.className = 'score-card';
+  const opencriticSource = document.createElement('div');
+  opencriticSource.className = 'score-source';
+  opencriticSource.textContent = 'OpenCritic';
+  const opencriticValue = document.createElement('span');
+  opencriticValue.className = data.opencritic !== null ? 'score-value' : 'score-value na';
+  opencriticValue.textContent = data.opencritic !== null ? data.opencritic : 'N/A';
+  opencriticCard.appendChild(opencriticSource);
+  opencriticCard.appendChild(opencriticValue);
+  scoresDiv.appendChild(opencriticCard);
+
+  results.appendChild(scoresDiv);
+
+  // Summary section
+  const summaryDiv = document.createElement('div');
+  summaryDiv.className = 'summary';
+
+  const summaryHeader = document.createElement('h3');
+  summaryHeader.textContent = 'Critical Reception';
+  summaryDiv.appendChild(summaryHeader);
+
+  const summaryText = document.createElement('p');
+  summaryText.textContent = data.summary || 'No summary available.';
+  summaryDiv.appendChild(summaryText);
+
+  // Links
+  const linksDiv = document.createElement('div');
+  linksDiv.className = 'links';
+
+  if (data.metacriticUrl && isValidUrl(data.metacriticUrl)) {
+    const metacriticLink = document.createElement('a');
+    metacriticLink.href = data.metacriticUrl;
+    metacriticLink.target = '_blank';
+    metacriticLink.rel = 'noopener noreferrer';
+    metacriticLink.textContent = 'Metacritic';
+    linksDiv.appendChild(metacriticLink);
   }
-  if (data.opencriticUrl) {
-    links += `<a href="${data.opencriticUrl}" target="_blank">OpenCritic</a>`;
-  }
-  links += '</div>';
 
-  results.innerHTML = `
-    <div class="game-title">${data.title}</div>
-    <div class="scores">
-      <div class="score-card">
-        <div class="score-source">Metacritic</div>
-        ${metacriticDisplay}
-      </div>
-      <div class="score-card">
-        <div class="score-source">OpenCritic</div>
-        ${opencriticDisplay}
-      </div>
-    </div>
-    <div class="summary">
-      <h3>Critical Reception</h3>
-      <p>${data.summary || 'No summary available.'}</p>
-      ${links}
-    </div>
-  `;
+  if (data.opencriticUrl && isValidUrl(data.opencriticUrl)) {
+    const opencriticLink = document.createElement('a');
+    opencriticLink.href = data.opencriticUrl;
+    opencriticLink.target = '_blank';
+    opencriticLink.rel = 'noopener noreferrer';
+    opencriticLink.textContent = 'OpenCritic';
+    linksDiv.appendChild(opencriticLink);
+  }
+
+  summaryDiv.appendChild(linksDiv);
+  results.appendChild(summaryDiv);
 }
 
 btn.addEventListener('click', () => {
