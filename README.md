@@ -1,6 +1,6 @@
 # Tools
 
-A collection of web-based and python utility tools. These tools run entirely in the browser with no server-side processing, ensuring privacy and fast performance.
+A collection of web-based and python utility tools.
 
 ## Available Tools
 
@@ -20,16 +20,6 @@ Rename PDF invoice files from "YYYY-MM-DD - name - invoice_no.pdf" to "YYYY-MM-D
 ```bash
 uv run https://kzuraw.github.io/tools/python/rename_invoices.py <directory> [--dry-run]
 ```
-
-## Usage
-
-Visit [https://kzuraw.github.io/tools/](https://kzuraw.github.io/tools/) to access all tools.
-
-All tools are client-side only - your data never leaves your browser.
-
-### Development
-
-All tools run entirely client-side, so you can test changes by simply opening the HTML files in your browser. No build process or server setup is required.
 
 ## Deployment
 
