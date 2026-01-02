@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - All tools follow same structure:
   - Vanilla HTML/CSS/JS (no frameworks)
   - Client-side only processing
-  - Consistent footer with navigation links
+  - Consistent footer with navigation links (Home, Source Code pointing to specific file on GitHub, kzuraw.com)
   - Tool emoji favicon: `🛠️`
   - Same styling (Apple-inspired, #0071e3 primary color)
 
@@ -17,8 +17,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 1. Create `html/new-tool.html` following existing pattern
 2. Add entry to `index.html` tool list
-3. Include footer with navigation links
-4. Update README.md html tool lisst
+3. Include footer with navigation links:
+   - Home link: `../index.html`
+   - Source Code link: `https://github.com/kzuraw/tools/blob/main/html/new-tool.html`
+   - kzuraw.com link: `https://kzuraw.com`
+4. Update README.md html tool list
 
 ## Python
 
