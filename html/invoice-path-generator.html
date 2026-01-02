@@ -59,8 +59,8 @@ input {
 }
 
 input:focus {
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
 .output {
@@ -94,7 +94,7 @@ input:focus {
   font-size: 14px;
   font-weight: 500;
   color: white;
-  background: #0066cc;
+  background: #0071e3;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -122,7 +122,7 @@ footer {
 }
 
 footer a {
-  color: #0066cc;
+  color: #0071e3;
   text-decoration: none;
   margin: 0 10px;
 }
@@ -175,15 +175,29 @@ const copyBtn = document.getElementById('copyBtn');
 const today = new Date().toISOString().split('T')[0];
 dateInput.value = today;
 
+function sanitizeForFilename(str) {
+  return str
+    .toLowerCase()
+    .replace(/&/g, 'and')           // Replace & with 'and'
+    .replace(/[^a-z0-9\s-]/g, '')   // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')           // Replace spaces with hyphens
+    .replace(/-+/g, '-')            // Collapse multiple hyphens
+    .replace(/^-|-$/g, '');         // Trim leading/trailing hyphens
+}
+
 function generatePath() {
   const date = dateInput.value;
   const company = companyInput.value.trim();
   const invoice = invoiceInput.value.trim();
 
   if (date && company && invoice) {
-    const companyFormatted = company.toLowerCase().replace(/\s+/g, '-');
-    const invoiceFormatted = invoice.toLowerCase().replace(/\s+/g, '-');
-    result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}.pdf`;
+    const companyFormatted = sanitizeForFilename(company);
+    const invoiceFormatted = sanitizeForFilename(invoice);
+    if (companyFormatted && invoiceFormatted) {
+      result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}.pdf`;
+    } else {
+      result.textContent = '';
+    }
   } else {
     result.textContent = '';
   }
