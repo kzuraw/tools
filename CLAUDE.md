@@ -17,7 +17,7 @@ Collection of web-based HTML tools and Python scripts. All HTML tools run entire
   - Client-side only processing
   - Consistent footer with navigation links
   - Tool emoji favicon: `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>`
-  - Same styling (Apple-inspired, #0066cc primary color)
+  - Same styling (Apple-inspired, #0071e3 primary color)
 
 ### Python Scripts
 
