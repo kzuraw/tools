@@ -4,12 +4,12 @@ A collection of web-based and python utility tools. These tools run entirely in 
 
 ## Available Tools
 
-- **[Certificate Converter](https://kzuraw.github.io/tools/html/cert-converter.html)** - convert certificates between different formats
+- **[Certificate to Single Line](https://kzuraw.github.io/tools/html/cert-converter.html)** - convert certificates to single line format
 - **[Git Commit Formatter](https://kzuraw.github.io/tools/html/git-commit-formatter.html)** - format commit messages with proper structure and line wrapping
 - **[GitHub Alert Copier](https://kzuraw.github.io/tools/html/github-alert-copier.html)** - copy GitHub alerts as HTML
+- **[Invoice Path Generator](https://kzuraw.github.io/tools/html/invoice-path-generator.html)** - generate standardized invoice file paths
 - **[Link to Markdown Table](https://kzuraw.github.io/tools/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://kzuraw.github.io/tools/html/markdown-to-rich-text.html)** - convert markdown to rich text
-- **[SQL Formatter](https://kzuraw.github.io/tools/html/sql-formatter.html)** - format SQL queries
 
 ## Python Scripts
 
