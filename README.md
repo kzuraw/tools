@@ -10,6 +10,7 @@ A collection of web-based and python utility tools.
 - **[Invoice Path Generator](https://kzuraw.github.io/tools/html/invoice-path-generator.html)** - generate standardized invoice file paths
 - **[Link to Markdown Table](https://kzuraw.github.io/tools/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://kzuraw.github.io/tools/html/markdown-to-rich-text.html)** - convert markdown to rich text
+- **[SVG to React](https://kzuraw.github.io/tools/html/svg-to-react.html)** - convert SVG to React components with camelCased props
 
 ## Python Scripts
 
