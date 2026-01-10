@@ -174,7 +174,16 @@
       'vector-effect': 'vectorEffect',
       'marker-start': 'markerStart',
       'marker-mid': 'markerMid',
-      'marker-end': 'markerEnd'
+      'marker-end': 'markerEnd',
+      'xlink:href': 'xlinkHref',
+      'xlink:type': 'xlinkType',
+      'xlink:role': 'xlinkRole',
+      'xlink:arcrole': 'xlinkArcrole',
+      'xlink:title': 'xlinkTitle',
+      'xlink:show': 'xlinkShow',
+      'xlink:actuate': 'xlinkActuate',
+      'xml:space': 'xmlSpace',
+      'xml:lang': 'xmlLang'
     };
 
     function hyphenToCamelCase(str) {
@@ -188,10 +197,21 @@
         const name = attr.name;
         let newName;
 
+        // Keep data-* and aria-* attributes as-is
+        if (name.startsWith('data-') || name.startsWith('aria-')) {
+          return;
+        }
+
         if (attributeMap[name]) {
           newName = attributeMap[name];
-        } else if (name.includes('-')) {
-          newName = hyphenToCamelCase(name);
+        } else if (name.includes('-') || name.includes(':')) {
+          // Handle namespaced attributes like xlink:href or xml:space
+          if (name.includes(':')) {
+            const parts = name.split(':');
+            newName = parts[0] + parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+          } else {
+            newName = hyphenToCamelCase(name);
+          }
         }
 
         if (newName && newName !== name) {
@@ -220,11 +240,13 @@
       convertAttributes(svgElement);
 
       let reactSvg = new XMLSerializer().serializeToString(svgElement);
-      reactSvg = reactSvg.replace(/xmlns="[^"]*"/g, '');
+      // Only remove the default SVG namespace, keep other namespaces like xmlns:xlink
+      reactSvg = reactSvg.replace(/\sxmlns="http:\/\/www\.w3\.org\/2000\/svg"/g, '');
       reactSvg = reactSvg.trim();
 
-      // Add ref and {...props} to the SVG element
-      reactSvg = reactSvg.replace('<svg', '<svg ref={ref} {...props}');
+      // Add {...props} and ref to the SVG element
+      // Props come before ref so hardcoded attributes can be overridden, but ref is always preserved
+      reactSvg = reactSvg.replace(/^<svg([^>]*?)>/, '<svg$1 {...props} ref={ref}>');
 
       const component = `import { forwardRef } from 'react';
 
