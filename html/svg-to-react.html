@@ -175,6 +175,14 @@
       'marker-start': 'markerStart',
       'marker-mid': 'markerMid',
       'marker-end': 'markerEnd',
+      'color-interpolation': 'colorInterpolation',
+      'color-interpolation-filters': 'colorInterpolationFilters',
+      'flood-color': 'floodColor',
+      'flood-opacity': 'floodOpacity',
+      'lighting-color': 'lightingColor',
+      'paint-order': 'paintOrder',
+      'shape-rendering': 'shapeRendering',
+      'text-decoration': 'textDecoration',
       'xlink:href': 'xlinkHref',
       'xlink:type': 'xlinkType',
       'xlink:role': 'xlinkRole',
@@ -196,6 +204,12 @@
       attrs.forEach(attr => {
         const name = attr.name;
         let newName;
+
+        // Remove xmlns and xmlns:* attributes (not needed in React)
+        if (name === 'xmlns' || name.startsWith('xmlns:')) {
+          element.removeAttribute(name);
+          return;
+        }
 
         // Keep data-* and aria-* attributes as-is
         if (name.startsWith('data-') || name.startsWith('aria-')) {
@@ -240,8 +254,8 @@
       convertAttributes(svgElement);
 
       let reactSvg = new XMLSerializer().serializeToString(svgElement);
-      // Only remove the default SVG namespace, keep other namespaces like xmlns:xlink
-      reactSvg = reactSvg.replace(/\sxmlns="http:\/\/www\.w3\.org\/2000\/svg"/g, '');
+      // Remove any remaining xmlns attributes (XMLSerializer may add them back)
+      reactSvg = reactSvg.replace(/\sxmlns(:\w+)?="[^"]*"/g, '');
       reactSvg = reactSvg.trim();
 
       // Add {...props} and ref to the SVG element
