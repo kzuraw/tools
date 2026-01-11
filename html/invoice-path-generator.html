@@ -63,6 +63,25 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  cursor: pointer;
+  accent-color: #0071e3;
+}
+
+.checkbox-label span {
+  user-select: none;
+}
+
 .output {
   margin-top: 28px;
   padding: 16px;
@@ -151,6 +170,13 @@ footer a:hover {
       <input type="text" id="invoice" placeholder="INV-001">
     </div>
 
+    <div class="field">
+      <label class="checkbox-label">
+        <input type="checkbox" id="addPdfExt">
+        <span>Add .pdf extension</span>
+      </label>
+    </div>
+
     <div class="output">
       <div class="output-label">Generated Path</div>
       <div class="output-value" id="result"></div>
@@ -168,6 +194,7 @@ footer a:hover {
 const dateInput = document.getElementById('date');
 const companyInput = document.getElementById('company');
 const invoiceInput = document.getElementById('invoice');
+const addPdfExtCheckbox = document.getElementById('addPdfExt');
 const result = document.getElementById('result');
 const copyBtn = document.getElementById('copyBtn');
 
@@ -194,7 +221,8 @@ function generatePath() {
     const companyFormatted = sanitizeForFilename(company);
     const invoiceFormatted = sanitizeForFilename(invoice);
     if (companyFormatted && invoiceFormatted) {
-      result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}.pdf`;
+      const extension = addPdfExtCheckbox.checked ? '.pdf' : '';
+      result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}${extension}`;
     } else {
       result.textContent = '';
     }
@@ -206,6 +234,7 @@ function generatePath() {
 dateInput.addEventListener('input', generatePath);
 companyInput.addEventListener('input', generatePath);
 invoiceInput.addEventListener('input', generatePath);
+addPdfExtCheckbox.addEventListener('change', generatePath);
 
 copyBtn.addEventListener('click', async () => {
   const text = result.textContent;
