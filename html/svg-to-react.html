@@ -288,25 +288,36 @@ export default Icon;`;
 
         let result = `${indent}<${tagName}`;
 
-        // For SVG element, add attributes on separate lines, then ref and props
+        // For SVG element, add attributes on separate lines, then props and ref
         if (tagName === 'svg') {
           attrs.forEach(attr => {
             result += `\n${indent}  ${attr.name}="${attr.value}"`;
           });
-          result += `\n${indent}  ref={ref}`;
           result += `\n${indent}  {...props}`;
+          result += `\n${indent}  ref={ref}`;
           result += `\n${indent}>`;
         } else {
-          // For other elements, put attributes inline
-          attrs.forEach(attr => {
-            result += `\n${indent}  ${attr.name}="${attr.value}"`;
-          });
-          if (attrs.length > 0) {
-            result += `\n${indent}/>`;
+          // For other elements
+          if (attrs.length === 0) {
+            result += ' />';
             return result;
+          } else if (attrs.length <= 2 && children.length === 0) {
+            // Put few attributes inline for simple elements
+            attrs.forEach(attr => {
+              result += ` ${attr.name}="${attr.value}"`;
+            });
+            result += ' />';
+            return result;
+          } else {
+            // Many attributes on separate lines
+            attrs.forEach(attr => {
+              result += `\n${indent}  ${attr.name}="${attr.value}"`;
+            });
+            result += children.length > 0 ? `\n${indent}>` : `\n${indent}/>`;
+            if (children.length === 0) {
+              return result;
+            }
           }
-          result += ' />';
-          return result;
         }
 
         children.forEach(child => {
