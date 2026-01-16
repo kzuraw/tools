@@ -68,11 +68,15 @@ def main(folder: Path, dry_run: bool):
         click.echo("No epub files found.")
         return
 
+    renamed_count = 0
+    skipped_count = 0
+
     for epub_path in epubs:
         author, title = extract_metadata(epub_path)
 
         if not author or not title:
             click.echo(f"Skipping {epub_path.name}: missing metadata")
+            skipped_count += 1
             continue
 
         new_name = sanitize_filename(f"{author} - {title}.epub")
@@ -83,10 +87,18 @@ def main(folder: Path, dry_run: bool):
             continue
 
         if dry_run:
-            click.echo(f"Would rename: {epub_path.name} -> {new_name}")
+            click.echo(f"Would rename: {epub_path.name} → {new_name}")
         else:
             epub_path.rename(new_path)
-            click.echo(f"Renamed: {epub_path.name} -> {new_name}")
+            click.echo(f"Renamed: {epub_path.name} → {new_name}")
+        renamed_count += 1
+
+    if renamed_count == 0 and skipped_count == 0:
+        click.echo("\nNo files needed renaming.")
+    elif dry_run:
+        click.echo(f"\nDry run complete. {renamed_count} file(s) would be renamed, {skipped_count} skipped.")
+    else:
+        click.echo(f"\nRenamed {renamed_count} file(s), {skipped_count} skipped.")
 
 
 if __name__ == "__main__":
