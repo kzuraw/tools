@@ -22,6 +22,14 @@ Rename PDF invoice files from "YYYY-MM-DD - name - invoice_no.pdf" to "YYYY-MM-D
 uv run https://kzuraw.github.io/tools/python/rename_invoices.py <directory> [--dry-run]
 ```
 
+### rename_epubs.py
+
+Rename epub files to "Author - Title.epub" format using metadata from the epub file
+
+```bash
+uv run https://kzuraw.github.io/tools/python/rename_epubs.py <directory> [--dry-run]
+```
+
 ## Deployment
 
 This project is automatically deployed to GitHub Pages. Any changes pushed to the main branch will be reflected at [https://kzuraw.github.io/tools/](https://kzuraw.github.io/tools/).
