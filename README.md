@@ -24,7 +24,7 @@ uv run https://kzuraw.github.io/tools/python/rename_invoices.py <directory> [--d
 
 ### rename_epubs.py
 
-Rename epub files to "Author - Title.epub" format using metadata from the epub file
+Rename epub files to `Author - Title.epub` format using metadata from the epub file
 
 ```bash
 uv run https://kzuraw.github.io/tools/python/rename_epubs.py <directory> [--dry-run]
