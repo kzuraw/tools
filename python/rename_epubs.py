@@ -26,6 +26,8 @@ def extract_metadata(epub_path: Path) -> tuple[str | None, str | None]:
             if rootfile is None:
                 return None, None
             opf_path = rootfile.get("full-path")
+            if not opf_path:
+                return None, None
 
             # Parse OPF for metadata
             opf_content = zf.read(opf_path)
@@ -39,7 +41,11 @@ def extract_metadata(epub_path: Path) -> tuple[str | None, str | None]:
             author = creator_el.text.strip() if creator_el is not None and creator_el.text else None
 
             return author, title
-    except Exception:
+    except (zipfile.BadZipFile, ET.ParseError, KeyError) as e:
+        click.echo(f"Error reading {epub_path.name}: {e}", err=True)
+        return None, None
+    except Exception as e:
+        click.echo(f"Unexpected error reading {epub_path.name}: {e}", err=True)
         return None, None
 
 
