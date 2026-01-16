@@ -7,6 +7,7 @@
 
 """Rename epub files to 'Author - Title.epub' format."""
 
+import re
 import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
@@ -51,9 +52,10 @@ def extract_metadata(epub_path: Path) -> tuple[str | None, str | None]:
 
 def sanitize_filename(name: str) -> str:
     """Remove characters that are invalid in filenames."""
-    invalid_chars = '<>:"/\\|?*'
+    invalid_chars = "<>:\"/\\|?*"
     for char in invalid_chars:
         name = name.replace(char, "")
+    name = re.sub(r"\s+", " ", name)
     return name.strip()
 
 
