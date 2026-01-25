@@ -1,72 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>kzuraw tools</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>"
+    />
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        h1 {
-            color: #333;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 10px;
-        }
-        .tool-list {
-            list-style: disc;
-            padding-left: 20px;
-        }
-        .tool-list li {
-            margin: 8px 0;
-        }
-        .tool-list a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .tool-list a:hover {
-            text-decoration: underline;
-        }
-        .tool-list .description {
-            color: #333;
-        }
-        footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
-        footer a {
-            color: #007bff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #333;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+      }
+      .tool-list {
+        list-style: disc;
+        padding-left: 20px;
+      }
+      .tool-list li {
+        margin: 8px 0;
+      }
+      .tool-list a {
+        color: #007bff;
+        text-decoration: none;
+      }
+      .tool-list a:hover {
+        text-decoration: underline;
+      }
+      .tool-list .description {
+        color: #333;
+      }
+      footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
+      footer a {
+        color: #007bff;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>kzuraw tools</h1>
     <ul class="tool-list">
-        <li><a href="html/cert-converter.html">Certificate to Single Line</a> <span class="description">convert certificates to single line format</span></li>
-        <li><a href="html/git-commit-formatter.html">Git Commit Formatter</a> <span class="description">format commit messages with proper structure and line wrapping</span></li>
-        <li><a href="html/github-alert-copier.html">GitHub Alert Copier</a> <span class="description">copy GitHub alerts as HTML</span></li>
-        <li><a href="html/invoice-path-generator.html">Invoice Path Generator</a> <span class="description">generate standardized invoice file paths</span></li>
-        <li><a href="html/link-to-markdown-table.html">Link to Markdown Table</a> <span class="description">convert links to markdown table format</span></li>
-        <li><a href="html/markdown-to-rich-text.html">Markdown to Rich Text</a> <span class="description">convert markdown to rich text</span></li>
-        <li><a href="html/svg-to-react.html">SVG to React</a> <span class="description">convert SVG to React components with camelCased props</span></li>
+      <li>
+        <a href="html/cert-converter.html">Certificate to Single Line</a>
+        <span class="description"
+          >convert certificates to single line format</span
+        >
+      </li>
+      <li>
+        <a href="html/git-commit-formatter.html">Git Commit Formatter</a>
+        <span class="description"
+          >format commit messages with proper structure and line wrapping</span
+        >
+      </li>
+      <li>
+        <a href="html/github-alert-copier.html">GitHub Alert Copier</a>
+        <span class="description">copy GitHub alerts as HTML</span>
+      </li>
+      <li>
+        <a href="html/invoice-path-generator.html">Invoice Path Generator</a>
+        <span class="description"
+          >generate standardized invoice file paths</span
+        >
+      </li>
+      <li>
+        <a href="html/link-to-markdown-table.html">Link to Markdown Table</a>
+        <span class="description">convert links to markdown table format</span>
+      </li>
+      <li>
+        <a href="html/markdown-to-rich-text.html">Markdown to Rich Text</a>
+        <span class="description">convert markdown to rich text</span>
+      </li>
+      <li>
+        <a href="html/svg-to-react.html">SVG to React</a>
+        <span class="description"
+          >convert SVG to React components with camelCased props</span
+        >
+      </li>
     </ul>
     <footer>
-        <a href="https://github.com/kzuraw/tools">Source Code</a> |
-        <a href="https://kzuraw.com">kzuraw.com</a>
+      <a href="https://github.com/kzuraw/tools">Source Code</a> |
+      <a href="https://kzuraw.com">kzuraw.com</a>
     </footer>
-</body>
+  </body>
 </html>

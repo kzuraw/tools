@@ -16,12 +16,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Adding new html tool
 
 1. Create `html/new-tool.html` following existing pattern
-2. Add entry to `index.html` tool list
-3. Include footer with navigation links:
+2. Run `pnpm dlx prettier --write "html/**/*.html" "index.html"` and commit changes
+3. Add entry to `index.html` tool list
+4. Include footer with navigation links:
    - Home link: `../index.html`
    - Source Code link: `https://github.com/kzuraw/tools/blob/main/html/new-tool.html`
    - kzuraw.com link: `https://kzuraw.com`
-4. Update README.md html tool list
+5. Update README.md html tool list
 
 ## Python
 
@@ -32,4 +33,5 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 1. Add to `python/` directory
 2. Use PEP 723 inline dependency spec
-3. Update README.md with usage example
+3. Run `uvx ruff format python/` and commit changes
+4. Update README.md with usage example

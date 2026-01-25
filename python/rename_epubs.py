@@ -38,8 +38,16 @@ def extract_metadata(epub_path: Path) -> tuple[str | None, str | None]:
             title_el = opf_root.find(".//dc:title", dc)
             creator_el = opf_root.find(".//dc:creator", dc)
 
-            title = title_el.text.strip() if title_el is not None and title_el.text else None
-            author = creator_el.text.strip() if creator_el is not None and creator_el.text else None
+            title = (
+                title_el.text.strip()
+                if title_el is not None and title_el.text
+                else None
+            )
+            author = (
+                creator_el.text.strip()
+                if creator_el is not None and creator_el.text
+                else None
+            )
 
             return author, title
     except (zipfile.BadZipFile, ET.ParseError, KeyError) as e:
@@ -52,7 +60,7 @@ def extract_metadata(epub_path: Path) -> tuple[str | None, str | None]:
 
 def sanitize_filename(name: str) -> str:
     """Remove characters that are invalid in filenames."""
-    invalid_chars = "<>:\"/\\|?*"
+    invalid_chars = '<>:"/\\|?*'
     for char in invalid_chars:
         name = name.replace(char, "")
     name = re.sub(r"\s+", " ", name)
@@ -98,7 +106,9 @@ def main(folder: Path, dry_run: bool):
     if renamed_count == 0 and skipped_count == 0:
         click.echo("\nNo files needed renaming.")
     elif dry_run:
-        click.echo(f"\nDry run complete. {renamed_count} file(s) would be renamed, {skipped_count} skipped.")
+        click.echo(
+            f"\nDry run complete. {renamed_count} file(s) would be renamed, {skipped_count} skipped."
+        )
     else:
         click.echo(f"\nRenamed {renamed_count} file(s), {skipped_count} skipped.")
 

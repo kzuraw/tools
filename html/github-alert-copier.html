@@ -1,198 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GitHub Alert Copier</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>"
+    />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f5f5f7;
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #f5f5f7;
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
 
-        h1 {
-            font-size: 32px;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 8px;
-        }
+      h1 {
+        font-size: 32px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+      }
 
-        .subtitle {
-            color: #86868b;
-            margin-bottom: 32px;
-            font-size: 15px;
-        }
+      .subtitle {
+        color: #86868b;
+        margin-bottom: 32px;
+        font-size: 15px;
+      }
 
-        .alert-grid {
-            display: grid;
-            gap: 12px;
-        }
+      .alert-grid {
+        display: grid;
+        gap: 12px;
+      }
 
-        .alert-button {
-            background: #f5f5f7;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
-            padding: 16px 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 15px;
-            font-weight: 500;
-            color: #1d1d1f;
-        }
+      .alert-button {
+        background: #f5f5f7;
+        border: 1px solid #d2d2d7;
+        border-radius: 8px;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #1d1d1f;
+      }
 
-        .alert-button:hover {
-            background: #e8e8ed;
-            border-color: #0071e3;
-        }
+      .alert-button:hover {
+        background: #e8e8ed;
+        border-color: #0071e3;
+      }
 
-        .alert-button:active {
-            transform: scale(0.98);
-        }
+      .alert-button:active {
+        transform: scale(0.98);
+      }
 
-        .alert-button.copied {
-            background: #d1f4e0;
-            border-color: #34c759;
-        }
+      .alert-button.copied {
+        background: #d1f4e0;
+        border-color: #34c759;
+      }
 
-        .alert-icon {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
+      .alert-icon {
+        font-size: 20px;
+        flex-shrink: 0;
+      }
 
-        .alert-label {
-            flex: 1;
-            text-align: left;
-            font-weight: 500;
-        }
+      .alert-label {
+        flex: 1;
+        text-align: left;
+        font-weight: 500;
+      }
 
-        .copy-status {
-            color: #86868b;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
+      .copy-status {
+        color: #86868b;
+        font-size: 13px;
+        transition: all 0.2s;
+      }
 
-        .alert-button.copied .copy-status {
-            color: #34c759;
-        }
+      .alert-button.copied .copy-status {
+        color: #34c759;
+      }
 
-        .alert-button.copied .copy-status::before {
-            content: '✓ ';
-        }
+      .alert-button.copied .copy-status::before {
+        content: "✓ ";
+      }
 
-        footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
+      footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
 
-        footer a {
-            color: #0071e3;
-            text-decoration: none;
-            margin: 0 10px;
-        }
+      footer a {
+        color: #0071e3;
+        text-decoration: none;
+        margin: 0 10px;
+      }
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+      footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>GitHub Alert Copier</h1>
-        <p class="subtitle">Click any alert type to copy its markdown syntax</p>
+      <h1>GitHub Alert Copier</h1>
+      <p class="subtitle">Click any alert type to copy its markdown syntax</p>
 
-        <div class="alert-grid">
-            <button class="alert-button" data-type="NOTE">
-                <span class="alert-icon">ℹ️</span>
-                <span class="alert-label">NOTE</span>
-                <span class="copy-status">Copy</span>
-            </button>
+      <div class="alert-grid">
+        <button class="alert-button" data-type="NOTE">
+          <span class="alert-icon">ℹ️</span>
+          <span class="alert-label">NOTE</span>
+          <span class="copy-status">Copy</span>
+        </button>
 
-            <button class="alert-button" data-type="TIP">
-                <span class="alert-icon">💡</span>
-                <span class="alert-label">TIP</span>
-                <span class="copy-status">Copy</span>
-            </button>
+        <button class="alert-button" data-type="TIP">
+          <span class="alert-icon">💡</span>
+          <span class="alert-label">TIP</span>
+          <span class="copy-status">Copy</span>
+        </button>
 
-            <button class="alert-button" data-type="IMPORTANT">
-                <span class="alert-icon">🔔</span>
-                <span class="alert-label">IMPORTANT</span>
-                <span class="copy-status">Copy</span>
-            </button>
+        <button class="alert-button" data-type="IMPORTANT">
+          <span class="alert-icon">🔔</span>
+          <span class="alert-label">IMPORTANT</span>
+          <span class="copy-status">Copy</span>
+        </button>
 
-            <button class="alert-button" data-type="WARNING">
-                <span class="alert-icon">⚠️</span>
-                <span class="alert-label">WARNING</span>
-                <span class="copy-status">Copy</span>
-            </button>
+        <button class="alert-button" data-type="WARNING">
+          <span class="alert-icon">⚠️</span>
+          <span class="alert-label">WARNING</span>
+          <span class="copy-status">Copy</span>
+        </button>
 
-            <button class="alert-button" data-type="CAUTION">
-                <span class="alert-icon">🚨</span>
-                <span class="alert-label">CAUTION</span>
-                <span class="copy-status">Copy</span>
-            </button>
-        </div>
+        <button class="alert-button" data-type="CAUTION">
+          <span class="alert-icon">🚨</span>
+          <span class="alert-label">CAUTION</span>
+          <span class="copy-status">Copy</span>
+        </button>
+      </div>
     </div>
 
     <script>
-        const templates = {
-            NOTE: '> [!NOTE]\n> Useful information that users should know, even when skimming content.',
-            TIP: '> [!TIP]\n> Helpful advice for doing things better or more easily.',
-            IMPORTANT: '> [!IMPORTANT]\n> Key information users need to know to achieve their goal.',
-            WARNING: '> [!WARNING]\n> Urgent info that needs immediate user attention to avoid problems.',
-            CAUTION: '> [!CAUTION]\n> Advises about risks or negative outcomes of certain actions.'
-        };
+      const templates = {
+        NOTE: "> [!NOTE]\n> Useful information that users should know, even when skimming content.",
+        TIP: "> [!TIP]\n> Helpful advice for doing things better or more easily.",
+        IMPORTANT:
+          "> [!IMPORTANT]\n> Key information users need to know to achieve their goal.",
+        WARNING:
+          "> [!WARNING]\n> Urgent info that needs immediate user attention to avoid problems.",
+        CAUTION:
+          "> [!CAUTION]\n> Advises about risks or negative outcomes of certain actions.",
+      };
 
-        document.querySelectorAll('.alert-button').forEach(button => {
-            button.addEventListener('click', async () => {
-                const type = button.dataset.type;
-                const text = templates[type];
-                const statusEl = button.querySelector('.copy-status');
+      document.querySelectorAll(".alert-button").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const type = button.dataset.type;
+          const text = templates[type];
+          const statusEl = button.querySelector(".copy-status");
 
-                try {
-                    await navigator.clipboard.writeText(text);
+          try {
+            await navigator.clipboard.writeText(text);
 
-                    button.classList.add('copied');
-                    statusEl.textContent = 'Copied';
+            button.classList.add("copied");
+            statusEl.textContent = "Copied";
 
-                    setTimeout(() => {
-                        button.classList.remove('copied');
-                        statusEl.textContent = 'Copy';
-                    }, 2000);
-                } catch (err) {
-                    console.error('Failed to copy:', err);
-                }
-            });
+            setTimeout(() => {
+              button.classList.remove("copied");
+              statusEl.textContent = "Copy";
+            }, 2000);
+          } catch (err) {
+            console.error("Failed to copy:", err);
+          }
         });
+      });
     </script>
 
     <footer>
-        <a href="../index.html">Home</a> |
-        <a href="https://github.com/kzuraw/tools/blob/main/html/github-alert-copier.html">Source Code</a> |
-        <a href="https://kzuraw.com">kzuraw.com</a>
+      <a href="../index.html">Home</a> |
+      <a
+        href="https://github.com/kzuraw/tools/blob/main/html/github-alert-copier.html"
+        >Source Code</a
+      >
+      |
+      <a href="https://kzuraw.com">kzuraw.com</a>
     </footer>
-</body>
+  </body>
 </html>

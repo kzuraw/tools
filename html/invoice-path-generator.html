@@ -1,256 +1,267 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice Path Generator</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
-  <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice Path Generator</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: #f5f5f7;
-  padding: 40px 20px;
-  min-height: 100vh;
-}
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        background: #f5f5f7;
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
 
-.container {
-  max-width: 480px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 12px;
-  padding: 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+      .container {
+        max-width: 480px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
 
-h1 {
-  font-size: 28px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin: 0 0 24px 0;
-  text-align: center;
-}
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 24px 0;
+        text-align: center;
+      }
 
-.field {
-  margin-bottom: 20px;
-}
+      .field {
+        margin-bottom: 20px;
+      }
 
-label {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #1d1d1f;
-  margin-bottom: 8px;
-}
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+      }
 
-input {
-  width: 100%;
-  font-size: 16px;
-  padding: 12px 14px;
-  border: 1px solid #d2d2d7;
-  border-radius: 8px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
+      input {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 14px;
+        border: 1px solid #d2d2d7;
+        border-radius: 8px;
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
 
-input:focus {
-  border-color: #0071e3;
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
-}
+      input:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+      }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-}
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 400;
+      }
 
-.checkbox-label input[type="checkbox"] {
-  width: auto;
-  margin-right: 8px;
-  cursor: pointer;
-  accent-color: #0071e3;
-}
+      .checkbox-label input[type="checkbox"] {
+        width: auto;
+        margin-right: 8px;
+        cursor: pointer;
+        accent-color: #0071e3;
+      }
 
-.checkbox-label span {
-  user-select: none;
-}
+      .checkbox-label span {
+        user-select: none;
+      }
 
-.output {
-  margin-top: 28px;
-  padding: 16px;
-  background: #f5f5f7;
-  border-radius: 8px;
-}
+      .output {
+        margin-top: 28px;
+        padding: 16px;
+        background: #f5f5f7;
+        border-radius: 8px;
+      }
 
-.output-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: #86868b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
+      .output-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: #86868b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+      }
 
-.output-value {
-  font-size: 15px;
-  font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, monospace;
-  color: #1d1d1f;
-  word-break: break-all;
-  min-height: 22px;
-}
+      .output-value {
+        font-size: 15px;
+        font-family: "SF Mono", SFMono-Regular, Menlo, Monaco, monospace;
+        color: #1d1d1f;
+        word-break: break-all;
+        min-height: 22px;
+      }
 
-.copy-btn {
-  margin-top: 12px;
-  width: 100%;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  color: white;
-  background: #0071e3;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+      .copy-btn {
+        margin-top: 12px;
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        background: #0071e3;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
 
-.copy-btn:hover {
-  background: #0077ed;
-}
+      .copy-btn:hover {
+        background: #0077ed;
+      }
 
-.copy-btn:active {
-  background: #005bb5;
-}
+      .copy-btn:active {
+        background: #005bb5;
+      }
 
-.copy-btn.copied {
-  background: #34c759;
-}
+      .copy-btn.copied {
+        background: #34c759;
+      }
 
-footer {
-  margin-top: 40px;
-  padding-top: 20px;
-  text-align: center;
-  color: #666;
-  font-size: 14px;
-}
+      footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
 
-footer a {
-  color: #0071e3;
-  text-decoration: none;
-  margin: 0 10px;
-}
+      footer a {
+        color: #0071e3;
+        text-decoration: none;
+        margin: 0 10px;
+      }
 
-footer a:hover {
-  text-decoration: underline;
-}
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>Invoice Path Generator</h1>
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Invoice Path Generator</h1>
 
-    <div class="field">
-      <label for="date">Date</label>
-      <input type="date" id="date">
+      <div class="field">
+        <label for="date">Date</label>
+        <input type="date" id="date" />
+      </div>
+
+      <div class="field">
+        <label for="company">Company Name</label>
+        <input type="text" id="company" placeholder="Acme Inc" />
+      </div>
+
+      <div class="field">
+        <label for="invoice">Invoice Number</label>
+        <input type="text" id="invoice" placeholder="INV-001" />
+      </div>
+
+      <div class="field">
+        <label class="checkbox-label">
+          <input type="checkbox" id="addPdfExt" />
+          <span>Add .pdf extension</span>
+        </label>
+      </div>
+
+      <div class="output">
+        <div class="output-label">Generated Path</div>
+        <div class="output-value" id="result"></div>
+        <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
+      </div>
     </div>
 
-    <div class="field">
-      <label for="company">Company Name</label>
-      <input type="text" id="company" placeholder="Acme Inc">
-    </div>
+    <footer>
+      <a href="../index.html">Home</a> |
+      <a
+        href="https://github.com/kzuraw/tools/blob/main/html/invoice-path-generator.html"
+        >Source Code</a
+      >
+      |
+      <a href="https://kzuraw.com">kzuraw.com</a>
+    </footer>
 
-    <div class="field">
-      <label for="invoice">Invoice Number</label>
-      <input type="text" id="invoice" placeholder="INV-001">
-    </div>
+    <script>
+      const dateInput = document.getElementById("date");
+      const companyInput = document.getElementById("company");
+      const invoiceInput = document.getElementById("invoice");
+      const addPdfExtCheckbox = document.getElementById("addPdfExt");
+      const result = document.getElementById("result");
+      const copyBtn = document.getElementById("copyBtn");
 
-    <div class="field">
-      <label class="checkbox-label">
-        <input type="checkbox" id="addPdfExt">
-        <span>Add .pdf extension</span>
-      </label>
-    </div>
+      // Set today's date as default
+      const today = new Date().toISOString().split("T")[0];
+      dateInput.value = today;
 
-    <div class="output">
-      <div class="output-label">Generated Path</div>
-      <div class="output-value" id="result"></div>
-      <button class="copy-btn" id="copyBtn">Copy to Clipboard</button>
-    </div>
-  </div>
+      function sanitizeForFilename(str) {
+        return str
+          .toLowerCase()
+          .replace(/&/g, "and") // Replace & with 'and'
+          .replace(/[^a-z0-9\s-]/g, "") // Remove special chars except spaces and hyphens
+          .replace(/\s+/g, "-") // Replace spaces with hyphens
+          .replace(/-+/g, "-") // Collapse multiple hyphens
+          .replace(/^-|-$/g, ""); // Trim leading/trailing hyphens
+      }
 
-  <footer>
-    <a href="../index.html">Home</a> |
-    <a href="https://github.com/kzuraw/tools/blob/main/html/invoice-path-generator.html">Source Code</a> |
-    <a href="https://kzuraw.com">kzuraw.com</a>
-  </footer>
+      function generatePath() {
+        const date = dateInput.value;
+        const company = companyInput.value.trim();
+        const invoice = invoiceInput.value.trim();
 
-<script>
-const dateInput = document.getElementById('date');
-const companyInput = document.getElementById('company');
-const invoiceInput = document.getElementById('invoice');
-const addPdfExtCheckbox = document.getElementById('addPdfExt');
-const result = document.getElementById('result');
-const copyBtn = document.getElementById('copyBtn');
+        if (date && company && invoice) {
+          const companyFormatted = sanitizeForFilename(company);
+          const invoiceFormatted = sanitizeForFilename(invoice);
+          if (companyFormatted && invoiceFormatted) {
+            const extension = addPdfExtCheckbox.checked ? ".pdf" : "";
+            result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}${extension}`;
+          } else {
+            result.textContent = "";
+          }
+        } else {
+          result.textContent = "";
+        }
+      }
 
-// Set today's date as default
-const today = new Date().toISOString().split('T')[0];
-dateInput.value = today;
+      dateInput.addEventListener("input", generatePath);
+      companyInput.addEventListener("input", generatePath);
+      invoiceInput.addEventListener("input", generatePath);
+      addPdfExtCheckbox.addEventListener("change", generatePath);
 
-function sanitizeForFilename(str) {
-  return str
-    .toLowerCase()
-    .replace(/&/g, 'and')           // Replace & with 'and'
-    .replace(/[^a-z0-9\s-]/g, '')   // Remove special chars except spaces and hyphens
-    .replace(/\s+/g, '-')           // Replace spaces with hyphens
-    .replace(/-+/g, '-')            // Collapse multiple hyphens
-    .replace(/^-|-$/g, '');         // Trim leading/trailing hyphens
-}
+      copyBtn.addEventListener("click", async () => {
+        const text = result.textContent;
+        if (!text) return;
 
-function generatePath() {
-  const date = dateInput.value;
-  const company = companyInput.value.trim();
-  const invoice = invoiceInput.value.trim();
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = "Copied!";
+        copyBtn.classList.add("copied");
 
-  if (date && company && invoice) {
-    const companyFormatted = sanitizeForFilename(company);
-    const invoiceFormatted = sanitizeForFilename(invoice);
-    if (companyFormatted && invoiceFormatted) {
-      const extension = addPdfExtCheckbox.checked ? '.pdf' : '';
-      result.textContent = `${date}_${companyFormatted}_${invoiceFormatted}${extension}`;
-    } else {
-      result.textContent = '';
-    }
-  } else {
-    result.textContent = '';
-  }
-}
+        setTimeout(() => {
+          copyBtn.textContent = "Copy to Clipboard";
+          copyBtn.classList.remove("copied");
+        }, 1500);
+      });
 
-dateInput.addEventListener('input', generatePath);
-companyInput.addEventListener('input', generatePath);
-invoiceInput.addEventListener('input', generatePath);
-addPdfExtCheckbox.addEventListener('change', generatePath);
-
-copyBtn.addEventListener('click', async () => {
-  const text = result.textContent;
-  if (!text) return;
-
-  await navigator.clipboard.writeText(text);
-  copyBtn.textContent = 'Copied!';
-  copyBtn.classList.add('copied');
-
-  setTimeout(() => {
-    copyBtn.textContent = 'Copy to Clipboard';
-    copyBtn.classList.remove('copied');
-  }, 1500);
-});
-
-generatePath();
-</script>
-</body>
+      generatePath();
+    </script>
+  </body>
 </html>
