@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.12"
+# requires-python = ">=3.14"
 # dependencies = [
 #     "click",
 # ]
@@ -32,7 +32,7 @@ def format_invoice_number(invoice_num: str) -> str:
 
 def sanitize_filename(name: str) -> str:
     """Remove characters that are invalid in filenames."""
-    invalid_chars = '<>:"|?*'
+    invalid_chars = '<>:"/\\|?*'
     for char in invalid_chars:
         name = name.replace(char, "")
     return name.strip()
@@ -62,10 +62,9 @@ def main(folder: Path, dry_run: bool):
     for pdf_path in pdfs:
         stem = pdf_path.stem
 
-        # Check if file already has date prefix (yyyy-mm)
+        # Strip existing date prefix if present (yyyy-mm)
         if re.match(r"^\d{4}-\d{2}\s", stem):
-            click.echo(f"Already has date prefix: {pdf_path.name}")
-            continue
+            stem = re.sub(r"^\d{4}-\d{2}\s+", "", stem)
 
         # Parse filename: first word is company, rest is invoice number
         parts = stem.split(maxsplit=1)
