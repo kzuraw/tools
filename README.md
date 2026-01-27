@@ -24,7 +24,7 @@ uv run https://tools.kzuraw.com/python/rename_epubs.py <directory> [--dry-run]
 
 ### rename_invoices.py
 
-Rename invoice PDFs from `company_name invoice_number.pdf` to `yyyy-mm company_name invoice_number.pdf` format. Extracts the date from PDF content and formats the invoice number (removes whitespace, converts `/` to `-`).
+Rename invoice PDFs from `company_name invoice_number.pdf` to `yyyy-mm company_name invoice_number.pdf` format. Uses file creation date and formats the invoice number (removes whitespace, converts `/` to `-`).
 
 ```bash
 uv run https://tools.kzuraw.com/python/rename_invoices.py <directory> [--dry-run]

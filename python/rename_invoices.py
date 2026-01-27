@@ -2,58 +2,30 @@
 # requires-python = ">=3.12"
 # dependencies = [
 #     "click",
-#     "pypdf",
 # ]
 # ///
 
 """Rename invoice PDFs to 'yyyy-mm company_name invoice_number.pdf' format."""
 
 import re
+from datetime import datetime
 from pathlib import Path
 
 import click
-from pypdf import PdfReader
 
 
-def extract_date_from_pdf(pdf_path: Path) -> tuple[int, int] | None:
-    """Extract invoice date (year, month) from PDF content."""
-    try:
-        reader = PdfReader(pdf_path)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text() or ""
-
-        # Common date patterns in invoices
-        # DD.MM.YYYY or DD/MM/YYYY or DD-MM-YYYY
-        patterns = [
-            r"(\d{1,2})[./\-](\d{1,2})[./\-](20\d{2})",  # DD.MM.YYYY
-            r"(20\d{2})[./\-](\d{1,2})[./\-](\d{1,2})",  # YYYY.MM.DD
-        ]
-
-        for pattern in patterns:
-            matches = re.findall(pattern, text)
-            if matches:
-                match = matches[0]
-                if pattern.startswith(r"(20"):
-                    # YYYY.MM.DD format
-                    year, month = int(match[0]), int(match[1])
-                else:
-                    # DD.MM.YYYY format
-                    year, month = int(match[2]), int(match[1])
-                if 1 <= month <= 12:
-                    return year, month
-
-        return None
-    except Exception as e:
-        click.echo(f"Error reading {pdf_path.name}: {e}", err=True)
-        return None
+def get_file_date(file_path: Path) -> tuple[int, int]:
+    """Get file creation date (year, month) from file metadata."""
+    stat = file_path.stat()
+    # Try birth time (creation time), fall back to mtime
+    timestamp = getattr(stat, "st_birthtime", None) or stat.st_mtime
+    dt = datetime.fromtimestamp(timestamp)
+    return dt.year, dt.month
 
 
 def format_invoice_number(invoice_num: str) -> str:
     """Format invoice number: remove whitespace, convert / to -."""
-    # Remove whitespace
     result = re.sub(r"\s+", "", invoice_num)
-    # Convert / to -
     result = result.replace("/", "-")
     return result
 
@@ -76,7 +48,7 @@ def main(folder: Path, dry_run: bool):
     Output format: 'yyyy-mm company_name invoice_number.pdf'
 
     The invoice number will have whitespace removed and / converted to -.
-    The date is extracted from the PDF content.
+    The date is taken from the file creation date.
     """
     pdfs = list(folder.glob("*.pdf"))
 
@@ -88,20 +60,12 @@ def main(folder: Path, dry_run: bool):
     skipped_count = 0
 
     for pdf_path in pdfs:
-        # Check if file already has date prefix (yyyy-mm)
         stem = pdf_path.stem
+
+        # Check if file already has date prefix (yyyy-mm)
         if re.match(r"^\d{4}-\d{2}\s", stem):
             click.echo(f"Already has date prefix: {pdf_path.name}")
             continue
-
-        # Extract date from PDF
-        date_info = extract_date_from_pdf(pdf_path)
-        if not date_info:
-            click.echo(f"Skipping {pdf_path.name}: could not extract date")
-            skipped_count += 1
-            continue
-
-        year, month = date_info
 
         # Parse filename: first word is company, rest is invoice number
         parts = stem.split(maxsplit=1)
@@ -112,6 +76,9 @@ def main(folder: Path, dry_run: bool):
 
         company_name = parts[0]
         invoice_number = format_invoice_number(parts[1])
+
+        # Get date from file creation time
+        year, month = get_file_date(pdf_path)
 
         # Build new filename
         new_stem = f"{year}-{month:02d} {company_name} {invoice_number}"
