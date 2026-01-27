@@ -63,7 +63,7 @@ def main(folder: Path, dry_run: bool):
         stem = pdf_path.stem
 
         # Strip existing date prefix if present (yyyy-mm)
-        if re.match(r"^\d{4}-\d{2}\s", stem):
+        if re.match(r"^\d{4}-\d{2}\s+", stem):
             stem = re.sub(r"^\d{4}-\d{2}\s+", "", stem)
 
         # Parse filename: first word is company, rest is invoice number
