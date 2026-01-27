@@ -35,6 +35,7 @@ def sanitize_filename(name: str) -> str:
     invalid_chars = '<>:"/\\|?*'
     for char in invalid_chars:
         name = name.replace(char, "")
+    name = re.sub(r"\s+", " ", name)
     return name.strip()
 
 
