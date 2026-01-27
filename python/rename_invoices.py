@@ -62,9 +62,10 @@ def main(folder: Path, dry_run: bool):
     for pdf_path in pdfs:
         stem = pdf_path.stem
 
-        # Strip existing date prefix if present (yyyy-mm)
+        # Skip files that already have date prefix (yyyy-mm)
         if re.match(r"^\d{4}-\d{2}\s+", stem):
-            stem = re.sub(r"^\d{4}-\d{2}\s+", "", stem)
+            click.echo(f"Already has date prefix: {pdf_path.name}")
+            continue
 
         # Parse filename: first word is company, rest is invoice number
         parts = stem.split(maxsplit=1)
@@ -84,7 +85,11 @@ def main(folder: Path, dry_run: bool):
         new_name = sanitize_filename(f"{new_stem}.pdf")
         new_path = folder / new_name
 
-        if new_path.exists() and new_path != pdf_path:
+        if new_path == pdf_path:
+            click.echo(f"Already named correctly: {pdf_path.name}")
+            continue
+
+        if new_path.exists():
             click.echo(f"Skipping {pdf_path.name}: target file already exists")
             skipped_count += 1
             continue
