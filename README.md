@@ -1,6 +1,6 @@
 # Tools
 
-A collection of web-based and python utility tools.
+A collection of web-based utility tools.
 
 ## Available Tools
 
@@ -11,24 +11,6 @@ A collection of web-based and python utility tools.
 - **[Link to Markdown Table](https://tools.kzuraw.com/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://tools.kzuraw.com/html/markdown-to-rich-text.html)** - convert markdown to rich text
 - **[SVG to React](https://tools.kzuraw.com/html/svg-to-react.html)** - convert SVG to React components with camelCased props
-
-## Python Scripts
-
-### rename_epubs.py
-
-Rename epub files to `Author - Title.epub` format using metadata from the epub file
-
-```bash
-uv run https://tools.kzuraw.com/python/rename_epubs.py <directory> [--dry-run]
-```
-
-### rename_invoices.py
-
-Rename invoice PDFs from `company_name invoice_number.pdf` to `yyyy-mm company_name invoice_number.pdf` format. Uses file creation date and formats the invoice number (removes whitespace, converts `/` to `-`).
-
-```bash
-uv run https://tools.kzuraw.com/python/rename_invoices.py <directory> [--dry-run]
-```
 
 ## Deployment
 
