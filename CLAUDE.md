@@ -23,15 +23,3 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    - Source Code link: `https://github.com/kzuraw/tools/blob/main/html/new-tool.html`
    - kzuraw.com link: `https://kzuraw.com`
 5. Update README.md html tool list
-
-## Python
-
-- **`python/`**: Standalone scripts with inline dependencies (PEP 723)
-- Use `uv run` for execution (handles dependencies automatically)
-
-### Adding new python script
-
-1. Add to `python/` directory
-2. Use PEP 723 inline dependency spec
-3. Run `uvx ruff format python/` and commit changes
-4. Update README.md with usage example
