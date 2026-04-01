@@ -8,7 +8,12 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
+      integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUAZpXAN8x1ouSiQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <style>
       * {
         box-sizing: border-box;
@@ -302,6 +307,18 @@
 
         try {
           const parsed = jsyaml.load(raw);
+          if (
+            typeof parsed !== "object" ||
+            parsed === null ||
+            Array.isArray(parsed)
+          ) {
+            inputStatus.textContent = "Not a mapping";
+            inputStatus.className = "status error";
+            output.value = jsyaml.dump(parsed, { lineWidth: -1 });
+            outputStatus.textContent = "No keys to sort";
+            outputStatus.className = "status empty";
+            return;
+          }
           const keyCount = Object.keys(parsed).length;
           inputStatus.textContent = `${keyCount} key${keyCount !== 1 ? "s" : ""}`;
           inputStatus.className = "status ok";
@@ -333,14 +350,22 @@
 
       copyBtn.addEventListener("click", () => {
         if (!output.value) return;
-        navigator.clipboard.writeText(output.value).then(() => {
-          copyBtn.textContent = "Copied!";
-          copyBtn.classList.add("copied");
-          setTimeout(() => {
-            copyBtn.textContent = "Copy";
-            copyBtn.classList.remove("copied");
-          }, 1500);
-        });
+        navigator.clipboard.writeText(output.value).then(
+          () => {
+            copyBtn.textContent = "Copied!";
+            copyBtn.classList.add("copied");
+            setTimeout(() => {
+              copyBtn.textContent = "Copy";
+              copyBtn.classList.remove("copied");
+            }, 1500);
+          },
+          () => {
+            copyBtn.textContent = "Failed!";
+            setTimeout(() => {
+              copyBtn.textContent = "Copy";
+            }, 1500);
+          },
+        );
       });
     </script>
 
