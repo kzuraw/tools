@@ -10,7 +10,7 @@
     />
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
-      integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUAZpXAN8x1ouSiQ=="
+      integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
@@ -252,8 +252,17 @@
           return;
         }
 
+        if (typeof jsyaml === "undefined") {
+          inputStatus.textContent =
+            "Failed to load YAML library — check your network or adblocker";
+          inputStatus.className = "status error";
+          output.value = "";
+          return;
+        }
+
         try {
-          const parsed = jsyaml.load(raw);
+          const sanitized = raw.replace(/\t/g, "  ");
+          const parsed = jsyaml.load(sanitized);
           if (
             typeof parsed !== "object" ||
             parsed === null ||
@@ -283,7 +292,7 @@
           outputStatus.textContent = "Sorted";
           outputStatus.className = "status ok";
         } catch (e) {
-          inputStatus.textContent = "Invalid YAML";
+          inputStatus.textContent = e.message || "Invalid YAML";
           inputStatus.className = "status error";
           outputStatus.textContent = "";
           outputStatus.className = "status empty";
