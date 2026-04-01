@@ -11,6 +11,7 @@ A collection of web-based utility tools.
 - **[Link to Markdown Table](https://tools.kzuraw.com/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://tools.kzuraw.com/html/markdown-to-rich-text.html)** - convert markdown to rich text
 - **[SVG to React](https://tools.kzuraw.com/html/svg-to-react.html)** - convert SVG to React components with camelCased props
+- **[YAML Sorter](https://tools.kzuraw.com/html/yaml-sorter.html)** - sort YAML keys alphabetically with deep sort option
 
 ## Deployment
 
