@@ -10,6 +10,7 @@ A collection of web-based utility tools.
 - **[Invoice Path Generator](https://tools.kzuraw.com/html/invoice-path-generator.html)** - generate standardized invoice file paths
 - **[Link to Markdown Table](https://tools.kzuraw.com/html/link-to-markdown-table.html)** - convert links to markdown table format
 - **[Markdown to Rich Text](https://tools.kzuraw.com/html/markdown-to-rich-text.html)** - convert markdown to rich text
+- **[Show in Large Type](https://tools.kzuraw.com/html/show-in-large-type.html)** - show text as large indexed characters
 - **[SVG to React](https://tools.kzuraw.com/html/svg-to-react.html)** - convert SVG to React components with camelCased props
 
 ## Deployment
