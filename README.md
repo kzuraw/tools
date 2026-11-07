@@ -4,6 +4,7 @@ A collection of web-based utility tools.
 
 ## Available Tools
 
+- **[Base64 Encode and Decode](https://tools.kzuraw.com/html/base64.html)** - encode UTF-8 text to Base64 and decode it back
 - **[Certificate to Single Line](https://tools.kzuraw.com/html/cert-converter.html)** - convert certificates to single line format
 - **[Git Commit Formatter](https://tools.kzuraw.com/html/git-commit-formatter.html)** - format commit messages with proper structure and line wrapping
 - **[GitHub Alert Copier](https://tools.kzuraw.com/html/github-alert-copier.html)** - copy GitHub alerts as HTML
